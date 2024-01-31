@@ -1,0 +1,31 @@
+:root {
+  --navbar-padding: 7rem;
+  --navbar-mobile-padding: 6rem;
+}
+
+button {
+  border-radius: 1rem;
+}
+
+button:hover {
+  background-color: lightgray;
+}
+
+button:active {
+  background-color: darkgray;
+}
+
+.selector-for-some-widget {
+  box-sizing: content-box;
+}
+
+body {
+  padding-bottom: 5rem;
+  padding-top: var(--navbar-padding);
+}
+
+@media screen and (max-width: 600px) {
+  body {
+    padding-top: var(--navbar-mobile-padding);
+  }
+}

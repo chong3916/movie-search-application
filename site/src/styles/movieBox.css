@@ -1,0 +1,54 @@
+.MovieBox .MovieBoxButtonContainer .MovieButtonContainer {
+    opacity: 0;
+    padding: 0.5rem;
+}
+
+.MovieBox:hover .MovieBoxButtonContainer .MovieButtonContainer {
+    opacity: 1;
+}
+
+.card-img.MoviePoster {
+    max-width: 8%;
+}
+
+.MovieDetailLink {
+    font-size: 1.4rem;
+}
+
+.MovieBoxButtonContainer {
+    padding-right: 4rem;
+}
+
+.MovieDetailLink:hover {
+    cursor: pointer;
+}
+
+@media screen and (max-width: 600px) {
+    .MovieBox .MovieBoxButtonContainer .MovieButtonContainer{
+        opacity: 1;
+    }
+
+    .MovieDetailLink {
+        font-size: 1.5vw;
+    }
+
+    #movieBoxReleaseDate {
+        font-size: 1.2vw;
+    }
+
+    .card-img.MoviePoster {
+        max-width: 3rem;
+        padding: 0;
+    }
+
+    .MovieBoxButtonContainer {
+        padding-right: 1rem;
+    }
+
+    #movieDetailCollapse {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+}
+

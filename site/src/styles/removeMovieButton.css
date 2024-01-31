@@ -1,0 +1,59 @@
+.RemoveMovieButton, .FreeTicketButton {
+    border: none;
+    background: none;
+    color: rgba(0, 0, 0, 0.4);
+    padding: 0;
+    height: 1rem;
+    line-height: 0.5rem;
+}
+
+.DeleteListButton > svg {
+    width: 2rem;
+    height: 2rem;
+}
+
+
+.DeleteListButton {
+    border: none;
+    background: none;
+    color: rgba(220, 220, 220, 0.93);
+}
+
+.RemoveMovieButton:active, .DeleteListButton:active, .FreeTicketButton:active {
+    outline: none;
+    box-shadow: none;
+    background: none;
+    border: none;
+}
+
+.RemoveMovieButton:focus, .DeleteListButton:focus, .FreeTicketButton:focus {
+    outline: none;
+    box-shadow: none;
+    background: none;
+    border: none;
+}
+
+.RemoveMovieButton:hover, .DeleteListButton:hover, .FreeTicketButton:hover {
+    background: none;
+}
+
+.RemoveMovieButton > svg:hover, .DeleteListButton > svg:hover, .FreeTicketButton > svg:hover {
+    fill: rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    background: none;
+}
+
+.FreeTicketPopupMessage {
+    font-size: 1.5rem;
+}
+
+@media screen and (max-width: 600px) {
+    .RemoveMovieButton > svg, .FreeTicketButton > svg {
+        width: 0.5rem;
+        height: 0.5rem;
+    }
+    .RemoveMovieButton, .FreeTicketButton {
+        height: 0.5rem;
+        line-height: 0.25rem;
+    }
+}
