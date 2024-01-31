@@ -1,0 +1,13 @@
+.LoginFormContainer, .SignUpFormContainer {
+    width: 60%;
+    border-style: solid;
+    border-color: rgb(177 177 177);
+    border-radius: 1rem;
+    box-shadow: 0.1em 0.1em 1em #c8c8c8;
+}
+
+@media screen and (max-width: 600px) {
+    .LoginFormContainer, .SignUpFormContainer {
+        width: 100%;
+    }
+}

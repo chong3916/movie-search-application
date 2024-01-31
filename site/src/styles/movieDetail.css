@@ -1,0 +1,56 @@
+div {
+    --image-url: "";
+}
+.DetailContainer {
+    background-image: var(--image-url);
+    background-color: #9c9a9a;
+    background-position-y: center;
+    background-position-x: 80%;
+    background-size: 100% auto;
+    color: white;
+}
+
+.MovieDetailsRow > .MoviePoster{
+    display: flex;
+}
+
+.MovieDetailsRow > .MoviePoster > #posterImg {
+    max-width: 100%;
+    height: auto;
+    border-radius:3%;
+}
+
+.MovieDetailsRow > .MoviePoster > svg {
+    margin: auto;
+}
+
+#movieDetailColumn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media screen and (max-width: 600px) {
+    .DetailContainer {
+        background: none;
+        padding: 0 3% 3% 3%;
+    }
+    .MoviePoster {
+        background-image: var(--image-url);
+        background-size: 100% auto;
+        padding: 3%;
+    }
+    .MovieDetailsRow > .MoviePoster > #posterImg {
+        max-width: 30%;
+        height: auto;
+        border-radius:3%;
+    }
+    .MovieDetailsRow {
+        background-color: #9c9a9a;
+    }
+
+    #movieDetailColumn {
+        padding: 8%;
+    }
+
+}

@@ -1,0 +1,36 @@
+.AddMovieButton, .CopyMovieButton, .MoveMovieButton, .SeeMovieListsButton{
+    border: none;
+    background: none;
+    color: rgba(0, 0, 0, 0.4);
+    padding: 0;
+    height: 1rem;
+    line-height: 0.5rem;
+}
+
+.AddMovieButton:hover, .CopyMovieButton:hover, .MoveMovieButton:hover, .SeeMovieListsButton:hover {
+    background: none;
+}
+
+.AddMovieButton > svg:hover, .CopyMovieButton > svg:hover, .MoveMovieButton > svg:hover, .SeeMovieListsButton > svg:hover {
+    fill: rgba(0,0,0,0.5);
+    cursor: pointer;
+    background: none;
+}
+
+.dropdown-toggle::after {
+    display: none;
+}
+
+@media screen and (max-width: 600px) {
+    .AddMovieButton > svg, .CopyMovieButton > svg, .MoveMovieButton > svg, .SeeMovieListsButton > svg{
+        width: 0.5rem;
+        height: 0.5rem;
+    }
+    .AddMovieButton, .CopyMovieButton, .MoveMovieButton, .SeeMovieListsButton{
+        height: 0.5rem;
+        line-height: 0.25rem;
+    }
+}
+
+
+

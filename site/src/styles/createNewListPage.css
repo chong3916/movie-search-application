@@ -1,0 +1,6 @@
+.NewListForm, .EditListForm {
+    border-radius: 0.3rem;
+    background-color: #f2f2f2;
+    padding: 1.25rem;
+    margin: 10% 20% 10% 20%;
+}

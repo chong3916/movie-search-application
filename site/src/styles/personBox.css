@@ -1,0 +1,40 @@
+.ProfileImgPlaceholder {
+    --bs-card-inner-border-radius: inherit;
+    background-color: #9c9a9a;
+    display: flex;
+    justify-content: center;
+    width: 11.875rem;
+    height: 17.815rem;
+    border-top-left-radius: var(--bs-card-inner-border-radius);
+    border-top-right-radius: var(--bs-card-inner-border-radius);
+}
+
+.PersonBox {
+    width: 12rem;
+    margin: 2%;
+}
+
+@media screen and (max-width: 600px) {
+    .PersonBox {
+        width: 8rem;
+    }
+
+    #profileInfo {
+        font-size: 0.4rem;
+    }
+
+    #actorLink {
+        font-size: 0.6rem;
+    }
+
+    .ProfileImgPlaceholder {
+        width: 7.875rem;
+        height: 11.815rem;
+    }
+
+    .ProfileImgPlaceholder > svg {
+        width: 2rem;
+        height: 2rem;
+        margin: auto;
+    }
+}
