@@ -1,0 +1,34 @@
+version: "2"
+services:
+    310-project:
+        build: .
+        ports:
+            - "8080:8080" # provide direct access to web server
+        stdin_open: true
+        tty: true
+        volumes:
+            - maven-cache:/root/.m2
+            - .:/usr/local/310-project
+        depends_on:
+            - db
+        environment:
+            SPRING_APPLICATION_JSON: '{
+            }'
+            SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/cs310db
+
+    db:
+        image: postgres:14.1-alpine
+        restart: always
+        environment:
+            POSTGRES_USER: "postgres"
+            POSTGRES_PASSWORD: "password"
+            POSTGRES_DB: "cs310db"
+        ports:
+            - '5432:5432'
+        volumes:
+            - db:/var/lib/postgresql/data
+
+volumes:
+    maven-cache: {}
+    db:
+        driver: local
