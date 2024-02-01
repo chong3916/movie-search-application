@@ -40,7 +40,7 @@ const WatchlistMoviesPage = ({ setBanner }) => {
         navigate(`/watchlist/${listId}/edit`, {state: {privacy: watchlist.privacy, listName: watchlist.listName, paramMessage: null}});
     }
 
-    const handleCompareList = (list) => {
+    const handleCompareList = (event, list) => {
         event.preventDefault();
         setCompareWatchlist(list);
         const commonMovieIds = list.movieIds.filter(value => watchlist.movieIds.includes(value));

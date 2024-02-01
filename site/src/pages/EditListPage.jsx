@@ -28,7 +28,7 @@ const EditListPage = ({ setBanner }) => {
         return fetchResponse;
     }
 
-    const editListName = async () => {
+    const editListName = async (event) => {
         event.preventDefault();
         const fetchResponse = await fetch("/api/lists/rename", {
             method: "POST",
