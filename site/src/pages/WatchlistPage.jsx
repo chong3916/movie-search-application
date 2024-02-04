@@ -7,18 +7,19 @@ import {Col, Container, Row} from "react-bootstrap";
 import RecommendationButton from "../components/RecommendationButton";
 import MovieBox from "../components/MovieBox";
 import {List} from "../api/list";
+import {useAuthContext} from "../contexts/AuthContext";
 
 const WatchlistPage = ({ setBanner }) => {
-    const userId = sessionStorage.getItem("user");
     const [userLists, setUserLists] = useState([]);
     const [publicLists, setPublicLists] = useState([]);
     const [recommendations, setRecommendations] = useState(null);
     const [watchlistUpdate, setWatchlistUpdate] = useState(false);
+    const {authData} = useAuthContext();
     const navigate = useNavigate();
 
     const getUserLists = async () => {
         try{
-            setUserLists(await List.getByUserId(userId));
+            setUserLists(await List.getByUserId(authData.uuid));
         } catch(e){
             setBanner({message: "Error getting user watchlists", variant: "danger"});
             navigate("/login");
