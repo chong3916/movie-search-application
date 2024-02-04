@@ -5,10 +5,12 @@ import {Col, Container, Form, Row} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import "../styles/loginPage.css";
 import Input from "../components/Input";
+import {useAuthContext} from "../contexts/AuthContext";
 
-const LoginPage = ({ sessionStorageEvent, setBanner }) => {
+const LoginPage = ({ setBanner }) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const { authData, setAuthData } = useAuthContext();
     const navigate = useNavigate();
 
     const handleSignUpClick = () => {
@@ -26,7 +28,6 @@ const LoginPage = ({ sessionStorageEvent, setBanner }) => {
                 setUsername("");
                 setPassword("");
                 setBanner({message: "Invalid password. Try again.", variant: "danger"});
-                //navigate(".", {state: {paramMessage: "Invalid password. Try again.", variant: "danger"}});
             }
             else if(user.status === 404){
                 console.log("user not found");
@@ -51,10 +52,7 @@ const LoginPage = ({ sessionStorageEvent, setBanner }) => {
             }
             else {
                 const userInfo = await user.json();
-                console.log(userInfo);
-                sessionStorage.clear();
-                sessionStorage.setItem("user", userInfo.uuid);
-                document.dispatchEvent(sessionStorageEvent);
+                setAuthData({...authData, uuid: userInfo.uuid, username: userInfo.username, isLoggedIn: true});
                 setBanner({message: null, variant: null});
                 navigate("/");
             }

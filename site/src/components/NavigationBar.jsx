@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import {
     Navbar,
@@ -8,27 +8,14 @@ import {
 import "../styles/navBar.css";
 import Searchbar from './Searchbar'
 import ErrorMessage from "./ErrorMessage";
+import {useAuthContext} from "../contexts/AuthContext";
 
-const NavigationBar = ({ sessionStorageEvent, banner, setBanner }) => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+const NavigationBar = ({ banner, setBanner }) => {
     const navigate = useNavigate();
-
-    useEffect(() => {
-        document.addEventListener("sessionStorageEvent", () => {
-            if(sessionStorage.getItem("user")){
-                setIsLoggedIn(true);
-            }
-            else{
-                setIsLoggedIn(false);
-            }
-        });
-
-        return () => {
-            document.removeEventListener("sessionStorageEvent", sessionStorageEvent, false);
-        }
-    }, []);
+    const { authData, setAuthData } = useAuthContext();
 
     useEffect(() => { // Get user info and movie list
+        console.log(authData);
         document.documentElement.style.setProperty('--navbar-padding', "7rem");
         document.documentElement.style.setProperty('--navbar-mobile-padding', "6rem");
         if (banner.message) {
@@ -43,10 +30,7 @@ const NavigationBar = ({ sessionStorageEvent, banner, setBanner }) => {
     }
 
     const handleLogoutClick = () => {
-        sessionStorage.clear();
-        setBanner({message: null, variant: null});
-        setIsLoggedIn(false);
-        document.dispatchEvent(sessionStorageEvent);
+        setAuthData({...authData, username: null, uuid: null, isLoggedIn: false});
         navigate("/login");
     }
 
@@ -60,17 +44,17 @@ const NavigationBar = ({ sessionStorageEvent, banner, setBanner }) => {
                 <Navbar.Collapse id="basic-navbar-nav">
                   <div className="custom-nav-wrapper">
                     <Nav className="me-auto">
-                      {isLoggedIn && (
+                      {authData.isLoggedIn && (
                         <Nav.Link id="viewProfileLink" onClick={() => handleNavigationClick("/user")}>
                           View Profile
                         </Nav.Link>
                       )}
-                      {!isLoggedIn && (
+                      {!authData.isLoggedIn && (
                         <Nav.Link id="navbarLogin" onClick={() => handleNavigationClick("/login")}>
                           Login
                         </Nav.Link>
                       )}
-                      {isLoggedIn && (
+                      {authData.isLoggedIn && (
                         <Nav.Link id="navbarLogout" onClick={() => handleLogoutClick()}>
                           Logout
                         </Nav.Link>
