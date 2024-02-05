@@ -64,30 +64,35 @@ const LoginPage = ({ setBanner }) => {
                     <Typography variant="h3" component="div" align="center">
                         Login
                     </Typography>
-                    <form onSubmit={handleSubmit}>
-                        <Stack spacing={5}>
-                            <TextField
-                                id="username"
-                                label="Username"
-                                value={username}
-                                variant="standard"
-                                onChange={(event) => {
-                                    setUsername(event.target.value);
-                                }}
-                            />
-                            <TextField
-                                id="password"
-                                label="Password"
-                                value={password}
-                                variant="standard"
-                                type="password"
-                                onChange={(event) => {
-                                    setPassword(event.target.value);
-                                }}
-                            />
-                            <Button type="submit" aria-label="submit" id="submit">LOGIN</Button>
-                        </Stack>
-                    </form>
+                    <Stack spacing={3}>
+                        <form onSubmit={handleSubmit}>
+                            <Stack spacing={5}>
+                                <TextField
+                                    id="username"
+                                    label="Username"
+                                    value={username}
+                                    variant="standard"
+                                    onChange={(event) => {
+                                        setUsername(event.target.value);
+                                    }}
+                                />
+                                <TextField
+                                    id="password"
+                                    label="Password"
+                                    value={password}
+                                    variant="standard"
+                                    type="password"
+                                    onChange={(event) => {
+                                        setPassword(event.target.value);
+                                    }}
+                                />
+                                <Button type="submit" aria-label="submit" id="submit">LOGIN</Button>
+                            </Stack>
+                        </form>
+                        <p style={{fontSize: "1rem", textAlign: "center", width: "auto"}}>
+                            Don&apos;t have an account? <Button variant="secondary" aria-label="Sign Up" size="sm" onClick={handleSignUpClick}>Sign Up</Button>
+                        </p>
+                    </Stack>
                 </CardContent>
             </Card>
         </Container>
