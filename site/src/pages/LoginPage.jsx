@@ -1,12 +1,10 @@
 import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import { Auth } from "../api/auth";
-import {Col, Form, Row, Stack} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import "../styles/loginPage.css";
-import Input from "../components/Input";
 import {useAuthContext} from "../contexts/AuthContext";
-import {Card, CardContent, Container, TextField, Typography} from "@mui/material";
+import {Card, CardContent, Container, TextField, Typography, Stack} from "@mui/material";
 
 const LoginPage = ({ setBanner }) => {
     const [username, setUsername] = useState("");
@@ -61,13 +59,13 @@ const LoginPage = ({ setBanner }) => {
 
     return (
         <Container maxWidth="sm">
-            <Card>
-                <CardContent>
+            <Card style={{margin: "3rem"}}>
+                <CardContent style={{margin: "2rem"}}>
                     <Typography variant="h3" component="div" align="center">
                         Login
                     </Typography>
                     <form onSubmit={handleSubmit}>
-                        <Stack spacing={3}>
+                        <Stack spacing={5}>
                             <TextField
                                 id="username"
                                 label="Username"
@@ -87,7 +85,7 @@ const LoginPage = ({ setBanner }) => {
                                     setPassword(event.target.value);
                                 }}
                             />
-                            <Button type="submit" aria-label="submit" id="submit">Login</Button>
+                            <Button type="submit" aria-label="submit" id="submit">LOGIN</Button>
                         </Stack>
                     </form>
                 </CardContent>
