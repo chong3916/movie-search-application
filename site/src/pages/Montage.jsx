@@ -3,19 +3,20 @@ import { useParams } from 'react-router-dom';
 import { List } from '../api/list';
 import { Movie } from '../api/movie';
 import MontageImages from '../components/MontageImages';
+import {useAuthContext} from "../contexts/AuthContext";
 
 
 const Montage = ()  => {
     const [movies, setMovies] = useState([]);
     const [watchlistName, setWatchlistName] = useState("");
     const { listId } = useParams();
+    const {authData} = useAuthContext();
     
     const movieImages = movies.flatMap(movie => [movie.backdropPath, movie.posterPath]);
 
     useEffect(() => {
         const fetchWatchlistMovies = async () => {
-            const userId = sessionStorage.getItem("user");
-            const watchlist = await List.getListById(Number.parseInt(listId), userId);
+            const watchlist = await List.getListById(Number.parseInt(listId), authData.uuid);
             setWatchlistName(watchlist.listName);
             setMovies(watchlist.movieIds ? await Movie.getManyById(watchlist.movieIds) : []);
         }
