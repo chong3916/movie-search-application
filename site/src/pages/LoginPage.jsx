@@ -1,11 +1,12 @@
 import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import { Auth } from "../api/auth";
-import {Col, Container, Form, Row} from "react-bootstrap";
+import {Col, Form, Row, Stack} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import "../styles/loginPage.css";
 import Input from "../components/Input";
 import {useAuthContext} from "../contexts/AuthContext";
+import {Card, CardContent, Container, TextField, Typography} from "@mui/material";
 
 const LoginPage = ({ setBanner }) => {
     const [username, setUsername] = useState("");
@@ -23,38 +24,33 @@ const LoginPage = ({ setBanner }) => {
         try {
             const user = await Auth.login(username, password);
             console.log(user.status);
-            if(user.status === 400){
-                console.log("bad response");
+            if(user.status !== 200)
+            {
                 setUsername("");
                 setPassword("");
-                setBanner({message: "Invalid password. Try again.", variant: "danger"});
-            }
-            else if(user.status === 404){
-                console.log("user not found");
-                setUsername("");
-                setPassword("");
-                setBanner({message: "Unable to find user with given information. Try again or create a new user.", variant: "danger"});
-                //navigate(".", {state: {paramMessage: "Unable to find user with given information. Try again or create a new user.", variant: "danger"}});
-            }
-            else if(user.status === 429){
-                console.log("locked account");
-                setUsername("");
-                setPassword("");
-                setBanner({message: "Locked account due to too many failed login attempts. Please try again later.", variant: "danger"});
-                //navigate(".", {state: {paramMessage: "Locked account due to too many failed login attempts. Please try again later.", variant: "danger"}});
-            }
-            else if(user.status === 503){
-                console.log("account still locked");
-                setUsername("");
-                setPassword("");
-                setBanner({message: "Account is still locked. Please try again later.", variant: "danger"});
-                //navigate(".", {state: {paramMessage: "Account is still locked. Please try again later.", variant: "danger"}});
             }
             else {
                 const userInfo = await user.json();
                 setAuthData({...authData, uuid: userInfo.uuid, username: userInfo.username, isLoggedIn: true});
                 setBanner({message: null, variant: null});
                 navigate("/");
+                return;
+            }
+
+            if(user.status === 400){
+                setBanner({message: "Invalid password. Try again.", variant: "danger"});
+            }
+            else if(user.status === 404){
+                setBanner({message: "Unable to find user with given information. Try again or create a new user.", variant: "danger"});
+                //navigate(".", {state: {paramMessage: "Unable to find user with given information. Try again or create a new user.", variant: "danger"}});
+            }
+            else if(user.status === 429){
+                setBanner({message: "Locked account due to too many failed login attempts. Please try again later.", variant: "danger"});
+                //navigate(".", {state: {paramMessage: "Locked account due to too many failed login attempts. Please try again later.", variant: "danger"}});
+            }
+            else if(user.status === 503){
+                setBanner({message: "Account is still locked. Please try again later.", variant: "danger"});
+                //navigate(".", {state: {paramMessage: "Account is still locked. Please try again later.", variant: "danger"}});
             }
         } catch (e) {
             setBanner({message: "Unable to find user with given information. Try again or create a new user.", variant: "danger"});
@@ -64,6 +60,40 @@ const LoginPage = ({ setBanner }) => {
     }
 
     return (
+        <Container maxWidth="sm">
+            <Card>
+                <CardContent>
+                    <Typography variant="h3" component="div" align="center">
+                        Login
+                    </Typography>
+                    <form onSubmit={handleSubmit}>
+                        <Stack spacing={3}>
+                            <TextField
+                                id="username"
+                                label="Username"
+                                value={username}
+                                variant="standard"
+                                onChange={(event) => {
+                                    setUsername(event.target.value);
+                                }}
+                            />
+                            <TextField
+                                id="password"
+                                label="Password"
+                                value={password}
+                                variant="standard"
+                                type="password"
+                                onChange={(event) => {
+                                    setPassword(event.target.value);
+                                }}
+                            />
+                            <Button type="submit" aria-label="submit" id="submit">Login</Button>
+                        </Stack>
+                    </form>
+                </CardContent>
+            </Card>
+        </Container>
+        /*
         <Container>
             <Container fluid style={{padding: "1rem"}}>
                 <Row className="justify-content-md-center">
@@ -106,6 +136,8 @@ const LoginPage = ({ setBanner }) => {
                 </Row>
             </Container>
         </Container>
+
+         */
     );
 }
 
