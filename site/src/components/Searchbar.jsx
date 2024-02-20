@@ -1,57 +1,113 @@
 import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
-import Button from 'react-bootstrap/Button';
-import {DropdownButton, Form, Stack} from "react-bootstrap";
-import DropdownItem from "react-bootstrap/DropdownItem";
+import {
+    alpha,
+    Box,
+    Divider,
+    Drawer,
+    IconButton,
+    InputBase, List,
+    ListItem, ListItemButton, ListItemIcon, ListItemText,
+    Menu,
+    MenuItem,
+    Paper,
+    Collapse,
+    styled, useMediaQuery, FormControl, FormGroup, FormControlLabel, Checkbox
+} from "@mui/material";
+import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import {CheckBox, ExpandLess, ExpandMore, StarBorder, Style} from "@mui/icons-material";
+import FilterCategories from "./FilterCategories";
+import {useSearchContext} from "../contexts/SearchContext";
+import FilterItems from "./FilterItems";
 
-const Searchbar = ({ setBanner }) =>{
-    const [searchTerm, setSearchTerm] = useState(""); // Initial search term is blank
-    const [searchCategory, setSearchCategory] = useState("keyword"); // Initial search category is movie
-    const [startYear, setStartYear] = useState(""); // Initial start year for filter is blank
-    const [endYear, setEndYear] = useState(""); // Initial end year for filter is blank
+const Search = styled('form')(({ theme }) => ({
+    position: 'relative',
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: alpha(theme.palette.common.white, 0.15),
+    '&:hover': {
+        backgroundColor: alpha(theme.palette.common.white, 0.25),
+    },
+    marginLeft: 0,
+    [theme.breakpoints.up('sm')]: {
+        width: 'auto',
+    },
+    padding: '0 1rem',
+}));
+
+const SearchIconWrapper = styled(IconButton)(({ theme }) => ({
+    padding: theme.spacing(0, 2),
+    height: '100%',
+    position: 'absolute',
+    display: 'contents',
+    color: 'white',
+    pointerEvents: 'all'
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+    color: 'inherit',
+    '& .MuiInputBase-input': {
+        padding: theme.spacing(1, 1, 1, 1),
+        transition: theme.transitions.create('width'),
+        [theme.breakpoints.up('sm')]: {
+            width: '20ch',
+            '&:focus': {
+                width: '28ch',
+            },
+        },
+    },
+}));
+
+const searchCategories = ['keyword', 'actor', 'title'];
+
+const Searchbar = ({ setBanner }) => {
+    const { searchData, setSearchData } = useSearchContext();
+    const [drawerState, setDrawerState] = React.useState(false);
+    const [openSortBy, setOpenSortBy] = React.useState(false);
+    const isMobile = !useMediaQuery('(min-width:600px)');
     const navigate = useNavigate();
 
     // set search category when term is typed
     const handleChangeTerm = (event) =>{
-        setSearchTerm(event.target.value);
-    };
-    const handleYearStartFilter = (event) =>{
-        setStartYear(event.target.value);
+        setSearchData({...searchData, searchTerm: event.target.value});
     };
 
-    const handleYearEndFilter = (event) => {
-        setEndYear(event.target.value);
-    };
+    const toggleDrawer = (open) => (event) => {
+        console.log(isMobile);
+        console.log(open);
+        if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+            return;
+        }
 
-    const handleChangeCategory = (event) =>{
-        setSearchCategory(event.target.value);
+        setDrawerState(open);
     };
 
     const handleSubmit = (event) =>{
         event.preventDefault();
-        if(/\S/.test(searchTerm)){
-            let searchStartYear = startYear;
-            let searchEndYear = endYear;
-            if(startYear.length == 0){
-                searchStartYear = null;
-            }
-            if(endYear.length == 0){
-                searchEndYear = null;
-            }
+        console.log(searchData);
+        if(/\S/.test(searchData.searchTerm)){
+            const searchStartYear = searchData.startYear.length === 0 ? null : searchData.startYear;
+            const searchEndYear = searchData.endYear.length === 0 ? null : searchData.endYear;
             setBanner({message: null, variant: null});
-            const searchPath = searchTerm.replace(' ', '+'); // replace the space in search term with "+"
-            setSearchTerm("");
-            setSearchCategory("keyword");
-            navigate('/search/' + searchCategory + '/' + searchPath + '/' + searchStartYear + '/' + searchEndYear);
+            const searchPath = searchData.searchTerm.replace(' ', '+'); // replace the space in search term with "+"
+            setSearchData({
+                searchTerm: "",
+                searchCategory: searchCategories[0],
+                startYear: "",
+                endYear: ""
+            });
+            navigate('/search/' + searchData.searchCategory + '/' + searchPath + '/' + searchStartYear + '/' + searchEndYear);
         }
         else{
-            setSearchTerm("");
-            setSearchCategory("keyword");
+            setSearchData({...searchData, searchTerm: "", searchCategory: searchCategories[0]});
             setBanner({message: "Search term can not be empty", variant: "danger"});
             //navigate(".", {state: {paramMessage: "Search term can not be empty", variant: "danger"}});
         }
     }
 
+
+    /*
     return(
         <div className="SearchBar" style={{margin: "1%"}}>
             <Form onSubmit={handleSubmit}>
@@ -70,6 +126,57 @@ const Searchbar = ({ setBanner }) =>{
                  </Stack>
             </Form>
         </div>
+    );
+    */
+    /*
+    return(
+        <Paper
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
+        >
+            <IconButton sx={{ p: '10px' }} aria-label="menu">
+                <MenuIcon />
+            </IconButton>
+            <InputBase
+                sx={{ ml: 1, flex: 1 }}
+                placeholder="Search Movie Time"
+                id="searchTerm"
+                inputProps={{ 'aria-label': 'searchTerm' }}
+                value={searchTerm}
+                onChange={handleChangeTerm}
+            />
+            <IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
+                <SearchIcon />
+            </IconButton>
+        </Paper>
+    );*/
+    return (
+        <Search onSubmit={handleSubmit}>
+            <IconButton onClick={toggleDrawer(true)} sx={{ color: 'white', pointerEvents: 'all' }}>
+                <FilterAltIcon/>
+            </IconButton>
+            <StyledInputBase
+                sx={{pointerEvents: 'auto'}}
+                value={searchData.searchTerm}
+                id="searchTerm"
+                onChange={(event) => {
+                    handleChangeTerm(event)
+                }}
+                placeholder="Search…"
+                inputProps={{'aria-label': 'searchTerm'}}
+            />
+            <SearchIconWrapper type="submit">
+                <SearchIcon/>
+            </SearchIconWrapper>
+            <Drawer
+                anchor={isMobile ? 'top' : 'left'}
+                open={drawerState}
+                onClose={toggleDrawer(false)}
+            >
+                <FilterItems isMobile={isMobile} openSortBy={openSortBy} setOpenSortBy={setOpenSortBy}/>
+            </Drawer>
+        </Search>
     );
 }
 
