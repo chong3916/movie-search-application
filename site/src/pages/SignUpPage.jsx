@@ -5,11 +5,13 @@ import Input from '../components/Input';
 import {Col, Container, Form, Row} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import "../styles/loginPage.css";
+import {useAuthContext} from "../contexts/AuthContext";
 
-function SignUpPage({ sessionStorageEvent, setBanner }) {
+function SignUpPage({ setBanner }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const {authData, setAuthData} = useAuthContext();
     const navigate = useNavigate();
 
     const handleLoginClick = () => {
@@ -29,9 +31,7 @@ function SignUpPage({ sessionStorageEvent, setBanner }) {
         
         try{ 
             const user = await Auth.signup(username, password);
-            sessionStorage.clear();
-            sessionStorage.setItem('user', user.uuid); // store userId in session storage
-            document.dispatchEvent(sessionStorageEvent);
+            setAuthData({...authData, uuid: user.uuid, username: user.username, isLoggedIn: true});
             setBanner({message: null, variant: null});
             navigate("/");
         } catch (e) {
