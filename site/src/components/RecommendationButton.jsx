@@ -13,7 +13,7 @@ const RecommendationButton = ({ setRecommendations, lists, setBanner }) => {
         setCheckedState(new Array(lists.length).fill(false));
     }, [lists])
 
-    const handleGenerateSuggestions = () => {
+    const handleGenerateSuggestions = (event) => {
         event.preventDefault();
         let movieIds = [];
         for(let i = 0; i < lists.length; i++){

@@ -4,13 +4,14 @@ import "../styles/createNewListPage.css"
 import {Form} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import {List as list} from "../api/list";
+import {useAuthContext} from "../contexts/AuthContext";
 const CreateNewListPage = ({ setBanner }) => {
-    const userId = sessionStorage.getItem("user");
     const [newListName, setNewListName] = useState("");
     const [newListPrivacy, setNewListPrivacy] = useState("private");
     const {state} = useLocation();
     const [movieIds, setMovieIds] = useState([]);
     const navigate = useNavigate();
+    const {authData} = useAuthContext();
 
     useEffect(() => {
         if(state && state.movieIds){
@@ -21,8 +22,8 @@ const CreateNewListPage = ({ setBanner }) => {
     const handleAddList = async (event) => {
         event.preventDefault();
         try {
-            const fetchResponse = (movieIds.length > 0 ? await list.newListWithMovies(userId, newListName, newListPrivacy === "private", movieIds) :
-                                                        await list.newListWithoutMovies(userId, newListName, newListPrivacy === "private"));
+            const fetchResponse = (movieIds.length > 0 ? await list.newListWithMovies(authData.uuid, newListName, newListPrivacy === "private", movieIds) :
+                                                        await list.newListWithoutMovies(authData.uuid, newListName, newListPrivacy === "private"));
 
             if (fetchResponse.ok) {
                 setBanner({message: "Created new watch list", variant: "success"});

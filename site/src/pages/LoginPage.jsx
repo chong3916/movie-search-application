@@ -1,14 +1,15 @@
 import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import { Auth } from "../api/auth";
-import {Col, Container, Form, Row} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import "../styles/loginPage.css";
-import Input from "../components/Input";
+import {useAuthContext} from "../contexts/AuthContext";
+import {Card, CardContent, Container, TextField, Typography, Stack} from "@mui/material";
 
-const LoginPage = ({ sessionStorageEvent, setBanner }) => {
+const LoginPage = ({ setBanner }) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const { authData, setAuthData } = useAuthContext();
     const navigate = useNavigate();
 
     const handleSignUpClick = () => {
@@ -21,42 +22,33 @@ const LoginPage = ({ sessionStorageEvent, setBanner }) => {
         try {
             const user = await Auth.login(username, password);
             console.log(user.status);
-            if(user.status === 400){
-                console.log("bad response");
+            if(user.status !== 200)
+            {
                 setUsername("");
                 setPassword("");
+            }
+            else {
+                const userInfo = await user.json();
+                setAuthData({...authData, uuid: userInfo.uuid, username: userInfo.username, isLoggedIn: true});
+                setBanner({message: null, variant: null});
+                navigate("/");
+                return;
+            }
+
+            if(user.status === 400){
                 setBanner({message: "Invalid password. Try again.", variant: "danger"});
-                //navigate(".", {state: {paramMessage: "Invalid password. Try again.", variant: "danger"}});
             }
             else if(user.status === 404){
-                console.log("user not found");
-                setUsername("");
-                setPassword("");
                 setBanner({message: "Unable to find user with given information. Try again or create a new user.", variant: "danger"});
                 //navigate(".", {state: {paramMessage: "Unable to find user with given information. Try again or create a new user.", variant: "danger"}});
             }
             else if(user.status === 429){
-                console.log("locked account");
-                setUsername("");
-                setPassword("");
                 setBanner({message: "Locked account due to too many failed login attempts. Please try again later.", variant: "danger"});
                 //navigate(".", {state: {paramMessage: "Locked account due to too many failed login attempts. Please try again later.", variant: "danger"}});
             }
             else if(user.status === 503){
-                console.log("account still locked");
-                setUsername("");
-                setPassword("");
                 setBanner({message: "Account is still locked. Please try again later.", variant: "danger"});
                 //navigate(".", {state: {paramMessage: "Account is still locked. Please try again later.", variant: "danger"}});
-            }
-            else {
-                const userInfo = await user.json();
-                console.log(userInfo);
-                sessionStorage.clear();
-                sessionStorage.setItem("user", userInfo.uuid);
-                document.dispatchEvent(sessionStorageEvent);
-                setBanner({message: null, variant: null});
-                navigate("/");
             }
         } catch (e) {
             setBanner({message: "Unable to find user with given information. Try again or create a new user.", variant: "danger"});
@@ -66,6 +58,45 @@ const LoginPage = ({ sessionStorageEvent, setBanner }) => {
     }
 
     return (
+        <Container maxWidth="sm">
+            <Card style={{margin: "3rem"}}>
+                <CardContent style={{margin: "2rem"}}>
+                    <Typography variant="h3" component="div" align="center">
+                        Login
+                    </Typography>
+                    <Stack spacing={3}>
+                        <form onSubmit={handleSubmit}>
+                            <Stack spacing={5}>
+                                <TextField
+                                    id="username"
+                                    label="Username"
+                                    value={username}
+                                    variant="standard"
+                                    onChange={(event) => {
+                                        setUsername(event.target.value);
+                                    }}
+                                />
+                                <TextField
+                                    id="password"
+                                    label="Password"
+                                    value={password}
+                                    variant="standard"
+                                    type="password"
+                                    onChange={(event) => {
+                                        setPassword(event.target.value);
+                                    }}
+                                />
+                                <Button type="submit" aria-label="submit" id="submit">LOGIN</Button>
+                            </Stack>
+                        </form>
+                        <p style={{fontSize: "1rem", textAlign: "center", width: "auto"}}>
+                            Don&apos;t have an account? <Button variant="secondary" aria-label="Sign Up" size="sm" onClick={handleSignUpClick}>Sign Up</Button>
+                        </p>
+                    </Stack>
+                </CardContent>
+            </Card>
+        </Container>
+        /*
         <Container>
             <Container fluid style={{padding: "1rem"}}>
                 <Row className="justify-content-md-center">
@@ -108,6 +139,8 @@ const LoginPage = ({ sessionStorageEvent, setBanner }) => {
                 </Row>
             </Container>
         </Container>
+
+         */
     );
 }
 

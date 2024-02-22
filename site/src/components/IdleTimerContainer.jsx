@@ -1,40 +1,26 @@
 import React, {useEffect, useState} from "react";
 import IdleTimer from "./IdleTimer";
 import {useNavigate} from "react-router-dom";
+import {useAuthContext} from "../contexts/AuthContext";
 
-const IdleTimerContainer = ({ sessionStorageEvent, setBanner }) => {
+const IdleTimerContainer = ({ setBanner }) => {
     const [isTimeout, setIsTimeout] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        document.addEventListener("sessionStorageEvent", () => {
-            if (sessionStorage.getItem("user")) {
-                setIsTimeout(false);
-                setIsLoggedIn(true);
-            } else {
-                setIsLoggedIn(false);
-            }
-        })
-        return () => {
-            document.removeEventListener("sessionStorageEvent", sessionStorageEvent, false);
-        }
-    }, [])
+    const {authData, setAuthData} = useAuthContext();
 
     useEffect(() => {
         if(isTimeout){ handleLogout(); }
     }, [isTimeout])
 
     const handleLogout = () => {
-        sessionStorage.clear();
-        document.dispatchEvent(sessionStorageEvent);
+        setAuthData({...authData, uuid: null, username: null, isLoggedIn: false});
         setBanner({message: "User timed out. Please login again", variant: "danger"});
         navigate("/");
     }
 
     return(
         <div style={{visibility: 'hidden' }}>
-            <IdleTimer isLoggedIn={isLoggedIn} timeoutDuration={60}
+            <IdleTimer isLoggedIn={authData.isLoggedIn} timeoutDuration={60}
                        onTimeout={() => setIsTimeout(true)} onExpired={() => setIsTimeout(true)}/>
         </div>
     );
