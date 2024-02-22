@@ -52,7 +52,7 @@ const FilterItems = (isMobile) => {
                             key={category.toLowerCase()}
                             disablePadding
                         >
-                            <ListItemButton role={undefined} onClick={() => handleChangeCategory(category)} dense>
+                            <ListItemButton id={category + "Category"} role={undefined} onClick={() => handleChangeCategory(category)} dense>
                                 <ListItemIcon>
                                     <Checkbox
                                         edge="start"
@@ -69,11 +69,10 @@ const FilterItems = (isMobile) => {
                 </Collapse>
                 <Divider/>
                 <ListItem>
-                    <ListItemButton role={undefined} dense>
+                    <ListItemButton role={undefined} dense disableRipple>
                         <InputBase
                             type="number"
-                            inputProps={{'aria-label': 'yearStartFilter'}}
-                            id="yearStartFilter"
+                            inputProps={{'aria-label': 'yearStartFilter', 'id': 'yearStartFilter'}}
                             value={searchData.startYear}
                             placeholder="Filter start year…"
                             onChange={(event) => {
@@ -82,11 +81,10 @@ const FilterItems = (isMobile) => {
                     </ListItemButton>
                 </ListItem>
                 <ListItem>
-                    <ListItemButton role={undefined} dense>
+                    <ListItemButton role={undefined} dense disableRipple>
                         <InputBase
                             type="number"
-                            inputProps={{'aria-label': 'yearEndFilter'}}
-                            id="yearEndFilter"
+                            inputProps={{'aria-label': 'yearEndFilter', 'id': 'yearEndFilter'}}
                             value={searchData.endYear}
                             placeholder="Filter end year…"
                             onChange={(event) => {
@@ -97,18 +95,6 @@ const FilterItems = (isMobile) => {
             </List>
         </Box>
     );
-    /*
-    <ListItem disablePadding
-                          type="number"
-                          component={InputBase}
-                          inputProps={{'aria-label': 'yearStartFilter'}}
-                          id="yearStartFilter"
-                          value={searchData.startYear}
-                          placeholder="Filter start year…"
-                          onChange={(event) => {
-                              handleYearStartFilter(event)
-                          }}/>
-     */
 }
 
 export default FilterItems;

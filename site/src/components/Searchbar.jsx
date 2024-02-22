@@ -155,7 +155,7 @@ const Searchbar = ({ setBanner }) => {
                 placeholder="Search…"
                 inputProps={{'aria-label': 'searchTerm'}}
             />
-            <SearchIconWrapper type="submit">
+            <SearchIconWrapper type="submit" disableRipple>
                 <SearchIcon/>
             </SearchIconWrapper>
             <Drawer
