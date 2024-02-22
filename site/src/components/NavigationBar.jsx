@@ -125,18 +125,18 @@ const NavigationBar = ({ banner, setBanner }) => {
                             <Searchbar setBanner={setBanner}/>}
                         <Button
                             onClick={() => handleNavigationClick("/user")}
-                            sx={{my: 2, color: 'white', pointerEvents: 'auto'}}>
+                            sx={{my: 2, color: 'white', pointerEvents: 'auto'}} disableRipple>
                             Watchlist
                         </Button>
                         {!authData.isLoggedIn ?
                             <Button
                                 onClick={() => handleNavigationClick("/login")}
-                                sx={{my: 2, color: 'white', pointerEvents: 'auto'}}>
+                                sx={{my: 2, color: 'white', pointerEvents: 'auto'}} disableRipple>
                                 Login
                             </Button> :
                             <Button
                                 onClick={() => handleLogoutClick()}
-                                sx={{my: 2, color: 'white', pointerEvents: 'auto'}}>
+                                sx={{my: 2, color: 'white', pointerEvents: 'auto'}} disableRipple>
                                 Logout
                             </Button>
                         }
