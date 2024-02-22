@@ -3,6 +3,10 @@
   padding: 0.5rem 1rem;
 }
 
+#searchBarContents {
+  margin-left: auto
+}
+
 .navbar-brand {
   font-size: 1.5rem;
   font-weight: bold;
