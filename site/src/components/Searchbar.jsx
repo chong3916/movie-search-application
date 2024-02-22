@@ -1,24 +1,14 @@
-import React, {useState} from "react";
+import React from "react";
 import {useNavigate} from "react-router-dom";
 import {
     alpha,
-    Box,
-    Divider,
     Drawer,
     IconButton,
-    InputBase, List,
-    ListItem, ListItemButton, ListItemIcon, ListItemText,
-    Menu,
-    MenuItem,
-    Paper,
-    Collapse,
-    styled, useMediaQuery, FormControl, FormGroup, FormControlLabel, Checkbox
+    InputBase,
+    styled, useMediaQuery
 } from "@mui/material";
-import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import {CheckBox, ExpandLess, ExpandMore, StarBorder, Style} from "@mui/icons-material";
-import FilterCategories from "./FilterCategories";
 import {useSearchContext} from "../contexts/SearchContext";
 import FilterItems from "./FilterItems";
 
@@ -64,7 +54,6 @@ const searchCategories = ['keyword', 'actor', 'title'];
 const Searchbar = ({ setBanner }) => {
     const { searchData, setSearchData } = useSearchContext();
     const [drawerState, setDrawerState] = React.useState(false);
-    const [openSortBy, setOpenSortBy] = React.useState(false);
     const isMobile = !useMediaQuery('(min-width:600px)');
     const navigate = useNavigate();
 
@@ -174,7 +163,7 @@ const Searchbar = ({ setBanner }) => {
                 open={drawerState}
                 onClose={toggleDrawer(false)}
             >
-                <FilterItems isMobile={isMobile} openSortBy={openSortBy} setOpenSortBy={setOpenSortBy}/>
+                <FilterItems isMobile={isMobile}/>
             </Drawer>
         </Search>
     );

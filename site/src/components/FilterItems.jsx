@@ -1,6 +1,6 @@
 import {
     Box,
-    Checkbox,
+    Checkbox, Collapse,
     Divider,
     InputBase,
     List,
@@ -10,23 +10,29 @@ import {
     ListItemText
 } from "@mui/material";
 import {ExpandLess, ExpandMore} from "@mui/icons-material";
-import FilterCategories from "./FilterCategories";
 import React from "react";
 import {useSearchContext} from "../contexts/SearchContext";
 
-const FilterItems = (isMobile, openSortBy, setOpenSortBy) => {
-    const { searchData, setSearchData } = useSearchContext();
+const searchCategories = ['Keyword', 'Actor', 'Title'];
 
-    const handleSortByClick = () => {
-        setOpenSortBy(!openSortBy);
-    };
+const FilterItems = (isMobile) => {
+    const { searchData, setSearchData } = useSearchContext();
+    const [openSortBy, setOpenSortBy] = React.useState(false);
 
     const handleYearStartFilter = (event) =>{
         setSearchData({...searchData, startYear: event.target.value});
     };
 
+    const handleSortByClick = () => {
+        setOpenSortBy(!openSortBy);
+    };
+
     const handleYearEndFilter = (event) => {
         setSearchData({...searchData, endYear: event.target.value});
+    };
+
+    const handleChangeCategory = (category) =>{
+        setSearchData({...searchData, searchCategory: category.toLowerCase()})
     };
 
 
@@ -36,11 +42,31 @@ const FilterItems = (isMobile, openSortBy, setOpenSortBy) => {
             role="presentation"
         >
             <List>
-                <ListItemButton onClick={handleSortByClick}>
+                <ListItemButton onClick={() => { handleSortByClick() }}>
                     <ListItemText primary="Categories"/>
                     {openSortBy ? <ExpandLess/> : <ExpandMore/>}
                 </ListItemButton>
-                <FilterCategories openSortBy={openSortBy}/>
+                <Collapse in={openSortBy} timeout="auto" unmountOnExit>
+                    {searchCategories.map((category) => {
+                        return (<ListItem
+                            key={category.toLowerCase()}
+                            disablePadding
+                        >
+                            <ListItemButton role={undefined} onClick={() => handleChangeCategory(category)} dense>
+                                <ListItemIcon>
+                                    <Checkbox
+                                        edge="start"
+                                        checked={searchData.searchCategory === category.toLowerCase()}
+                                        tabIndex={-1}
+                                        disableRipple
+                                        inputProps={{'aria-labelledby': category.toLowerCase()}}
+                                    />
+                                </ListItemIcon>
+                                <ListItemText id={category.toLowerCase()} primary={category}/>
+                            </ListItemButton>
+                        </ListItem>)
+                    })}
+                </Collapse>
                 <Divider/>
                 <ListItem>
                     <ListItemButton role={undefined} dense>
