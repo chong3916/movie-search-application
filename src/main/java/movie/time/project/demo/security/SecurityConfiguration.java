@@ -18,11 +18,10 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.requiresChannel(channel -> channel.anyRequest());
+        http.requiresChannel(channel -> channel.anyRequest().requiresSecure());
         http.authorizeRequests().anyRequest().permitAll();
         http.cors().and().csrf().disable();
         return http.build();
     }
-
 }
 
