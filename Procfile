@@ -1,1 +1,1 @@
-
+web: java -jar target/Project-3.0.0-SNAPSHOT.jar
