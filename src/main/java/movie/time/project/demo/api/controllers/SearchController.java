@@ -26,10 +26,12 @@ public class SearchController {
     @GetMapping("/title/{searchTerm}/{searchStartYear}/{searchEndYear}/{page}")
     public ResponseEntity<MovieSearchResponse> getMovieSearchTitle(@PathVariable("searchTerm") String searchTerm, @PathVariable("searchStartYear") String startYear, @PathVariable("searchEndYear") String endYear, @PathVariable("page") int page){
         try {
+            System.out.println(apiKey);
             ResponseEntity<MovieSearchResponse> responseEntity = restTemplate.getForEntity(
                     "https://api.themoviedb.org/3/search/movie?api_key=" + apiKey + "&query=" + searchTerm, MovieSearchResponse.class
             );
             if(responseEntity.getStatusCode() != HttpStatus.OK || !responseEntity.hasBody() || responseEntity.getBody().getResults() == null || responseEntity.getBody().getResults().size() == 0){
+                System.out.println("not found");
                 return ResponseEntity.notFound().build(); // Return bad response
             }
 
@@ -50,9 +52,11 @@ public class SearchController {
             ArrayList<MovieResponse> filteredMovies = filterMovies(responseList, startYear, endYear);
             response.setResults(filteredMovies);
             response.setTotalResults(filteredMovies.size());
+            System.out.println("got ok");
             return ResponseEntity.ok().body(response);
         }
         catch(IllegalArgumentException e){ // Unable to get data from link
+            System.out.println("bad request");
             return ResponseEntity.badRequest().build(); // Return bad response
         }
     }
