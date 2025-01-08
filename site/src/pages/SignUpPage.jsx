@@ -2,10 +2,10 @@ import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import { Auth } from "../api/auth";
 import Input from '../components/Input';
-import {Col, Container, Form, Row} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import "../styles/loginPage.css";
 import {useAuthContext} from "../contexts/AuthContext";
+import {Card, Container, CardContent, Stack, TextField, Typography} from "@mui/material";
 
 function SignUpPage({ setBanner }) {
     const [username, setUsername] = useState("");
@@ -42,55 +42,103 @@ function SignUpPage({ setBanner }) {
     };
 
     return (
-        <Container>
-            <Container fluid style={{padding: "1rem"}}>
-                <Row className="justify-content-md-center">
-                    <h1 style={{textAlign: "center"}}>Welcome to Movie Search!</h1>
-                </Row>
-                <Row className="justify-content-md-center">
-                    <h2 style={{textAlign: "center"}}>Create a New Account</h2>
-                </Row>
-                <Row className="justify-content-md-center">
-                    <p style={{textAlign: "center"}}>
-                        Create a username, email, and password below to find your favorite movies and actors.</p>
-                </Row>
-            </Container>
-            <Container aria-label="signUpFormContainer" className="SignUpFormContainer">
-                <Form onSubmit={handleSubmit} style={{padding: "1rem", width: "auto"}}>
-                    <Input
-                        value={username}
-                        onChange={(event) => setUsername(event.target.value)}
-                        type={"text"}
-                        id={"username"}
-                        displayLabel={"Username "}
-                    />
-                    <Input
-                        value={password}
-                        onChange={(event) => setPassword(event.target.value)}
-                        type={"password"}
-                        id={"password"}
-                        displayLabel={"Password "}
-                    />
-                    <Input
-                        value={confirmPassword}
-                        onChange={(event) => setConfirmPassword(event.target.value)}
-                        type={"password"}
-                        id={"confirmPassword"}
-                        displayLabel={"Confirm Password "}
-                    />
-                    <Row className="justify-content-md-center" md={2}>
-                        <Col xs sm="auto" style={{display: "flex", justifyContent: "center"}}>
-                            <Button type="submit" aria-label="submit" id="submitSignUp">Sign Up</Button>
-                        </Col>
-                    </Row>
-                </Form>
-                <Row className="justify-content-md-center" md={2}>
-                    <p style={{fontSize: "1rem", textAlign: "center", width: "auto"}}>
-                        Already have an account? <Button variant="secondary" aria-label="Login" size="sm" onClick={handleLoginClick}>Login</Button>
-                    </p>
-                </Row>
-            </Container>
+        <Container maxWidth="sm">
+            <Card style={{margin: "3rem"}}>
+                <CardContent style={{margin: "2rem"}}>
+                    <Typography variant="h3" component="div" align="center">
+                        Create a New Account
+                    </Typography>
+                    <Stack spacing={3}>
+                        <form onSubmit={handleSubmit}>
+                            <Stack spacing={5}>
+                                <TextField
+                                    id="username"
+                                    label="Username"
+                                    value={username}
+                                    variant="standard"
+                                    onChange={(event) => {
+                                        setUsername(event.target.value);
+                                    }}
+                                />
+                                <TextField
+                                    id="password"
+                                    label="Password"
+                                    value={password}
+                                    variant="standard"
+                                    type="password"
+                                    onChange={(event) => {
+                                        setPassword(event.target.value);
+                                    }}
+                                />
+                                <TextField
+                                    id="confirmPassword"
+                                    label="confirmPassword"
+                                    value={confirmPassword}
+                                    variant="standard"
+                                    type="password"
+                                    onChange={(event) => {
+                                        setConfirmPassword(event.target.value);
+                                    }}
+                                />
+                                <Button type="submit" aria-label="submit" id="submit">LOGIN</Button>
+                            </Stack>
+                        </form>
+                        <p style={{fontSize: "1rem", textAlign: "center", width: "auto"}}>
+                            Already have an account? <Button variant="secondary" aria-label="Login" size="sm" onClick={handleLoginClick}>Login</Button>
+                        </p>
+                    </Stack>
+                </CardContent>
+            </Card>
         </Container>
+        // <Container>
+        //     <Container fluid style={{padding: "1rem"}}>
+        //         <Row className="justify-content-md-center">
+        //             <h1 style={{textAlign: "center"}}>Welcome to Movie Search!</h1>
+        //         </Row>
+        //         <Row className="justify-content-md-center">
+        //             <h2 style={{textAlign: "center"}}>Create a New Account</h2>
+        //         </Row>
+        //         <Row className="justify-content-md-center">
+        //             <p style={{textAlign: "center"}}>
+        //                 Create a username, email, and password below to find your favorite movies and actors.</p>
+        //         </Row>
+        //     </Container>
+        //     <Container aria-label="signUpFormContainer" className="SignUpFormContainer">
+        //         <Form onSubmit={handleSubmit} style={{padding: "1rem", width: "auto"}}>
+        //             <Input
+        //                 value={username}
+        //                 onChange={(event) => setUsername(event.target.value)}
+        //                 type={"text"}
+        //                 id={"username"}
+        //                 displayLabel={"Username "}
+        //             />
+        //             <Input
+        //                 value={password}
+        //                 onChange={(event) => setPassword(event.target.value)}
+        //                 type={"password"}
+        //                 id={"password"}
+        //                 displayLabel={"Password "}
+        //             />
+        //             <Input
+        //                 value={confirmPassword}
+        //                 onChange={(event) => setConfirmPassword(event.target.value)}
+        //                 type={"password"}
+        //                 id={"confirmPassword"}
+        //                 displayLabel={"Confirm Password "}
+        //             />
+        //             <Row className="justify-content-md-center" md={2}>
+        //                 <Col xs sm="auto" style={{display: "flex", justifyContent: "center"}}>
+        //                     <Button type="submit" aria-label="submit" id="submitSignUp">Sign Up</Button>
+        //                 </Col>
+        //             </Row>
+        //         </Form>
+        //         <Row className="justify-content-md-center" md={2}>
+        //             <p style={{fontSize: "1rem", textAlign: "center", width: "auto"}}>
+        //                 Already have an account? <Button variant="secondary" aria-label="Login" size="sm" onClick={handleLoginClick}>Login</Button>
+        //             </p>
+        //         </Row>
+        //     </Container>
+        // </Container>
     );
 }
 
