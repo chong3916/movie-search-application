@@ -3,12 +3,14 @@ import {useLocation, useNavigate, useParams} from "react-router-dom";
 import "../styles/createNewListPage.css"
 import {Form} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
+import {useAuthContext} from "../contexts/AuthContext";
 const EditListPage = ({ setBanner }) => {
     const { state } = useLocation();
     const { listId } = useParams();
     const [listName, setListName] = useState(state.listName);
     const [listPrivacy, setListPrivacy] = useState((state.privacy ? "private" : "public"));
     const navigate = useNavigate();
+    const {authData} = useAuthContext();
 
     useEffect(() => { // Get user info and movie list
         console.log(state.privacy);
@@ -35,7 +37,7 @@ const EditListPage = ({ setBanner }) => {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({listId: listId, listName: listName, userId: sessionStorage.getItem("user")})
+            body: JSON.stringify({listId: listId, listName: listName, userId: authData.uuid})
         }).catch((err) => { console.log(err) });
 
         return fetchResponse;

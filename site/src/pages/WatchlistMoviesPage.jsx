@@ -7,9 +7,9 @@ import "../styles/watchlistMoviesPage.css";
 import DropdownItem from "react-bootstrap/DropdownItem";
 import { List } from "../api/list";
 import {Movie} from "../api/movie";
+import {useAuthContext} from "../contexts/AuthContext";
 
 const WatchlistMoviesPage = ({ setBanner }) => {
-    const userId = sessionStorage.getItem("user");
     const navigate = useNavigate();
     const { listId } = useParams();
     const [userLists, setUserLists] = useState([]);
@@ -17,6 +17,7 @@ const WatchlistMoviesPage = ({ setBanner }) => {
     const [compareWatchlistMovies, setCompareWatchlistMovies] = useState([]);
     const [watchlist, setWatchlist] = useState(null);
     const [watchlistMovies, setWatchlistMovies] = useState([]);
+    const {authData} = useAuthContext();
 
     const isUserList = watchlist ? userLists.filter(list => list.listId === watchlist.listId).length > 0 : false;
 
@@ -27,7 +28,7 @@ const WatchlistMoviesPage = ({ setBanner }) => {
 
     const handleGetListMovies = async () => {
         try {
-            const watchlistResponse = await List.getListById(Number.parseInt(listId), userId);
+            const watchlistResponse = await List.getListById(Number.parseInt(listId), authData.uuid);
             setWatchlist(watchlistResponse);
             await getAllListsMovies(watchlistResponse);
             await getUserLists();
@@ -63,7 +64,7 @@ const WatchlistMoviesPage = ({ setBanner }) => {
 
     const handleComparisonNewList = async () => {
         try {
-            await List.newListWithMovies(userId, commonListName(), true, compareWatchlist.movieIds);
+            await List.newListWithMovies(authData.uuid, commonListName(), true, compareWatchlist.movieIds);
             setBanner({message: "Created new watch list with common movies", variant: "success"});
             navigate("/user");
         } catch (e) {
@@ -86,7 +87,7 @@ const WatchlistMoviesPage = ({ setBanner }) => {
 
     const getUserLists = async () => {
         try {
-            setUserLists(await List.getByUserId(userId));
+            setUserLists(await List.getByUserId(authData.uuid));
         } catch (e) {
             setBanner({message: "Error getting user watchlists", variant: "danger"});
             navigate("/user");
