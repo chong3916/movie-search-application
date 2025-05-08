@@ -24,7 +24,6 @@ const LoginPage = () => {
         event.preventDefault();
         try {
             const user = await Auth.login(email, password);
-            console.log(user.status);
             if(user.status !== 200)
             {
                 setEmail("");
