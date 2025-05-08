@@ -70,6 +70,7 @@ function SignUpPage() {
                                     label="Email"
                                     value={email}
                                     variant="standard"
+                                    type="email"
                                     onChange={(event) => {
                                         setEmail(event.target.value);
                                     }}

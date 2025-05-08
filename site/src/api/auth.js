@@ -1,6 +1,6 @@
-const login = async (username, password) => {
+const login = async (email, password) => {
   const payload = {
-    username,
+    email,
     password
   };
   const response = await fetch("/api/auth/login", {
