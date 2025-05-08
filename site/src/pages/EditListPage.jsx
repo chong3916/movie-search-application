@@ -4,13 +4,17 @@ import "../styles/createNewListPage.css"
 import {Form} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import {useAuthContext} from "../contexts/AuthContext";
-const EditListPage = ({ setBanner }) => {
+import {useBannerContext} from "../contexts/BannerContext";
+const EditListPage = () => {
     const { state } = useLocation();
     const { listId } = useParams();
     const [listName, setListName] = useState(state.listName);
     const [listPrivacy, setListPrivacy] = useState((state.privacy ? "private" : "public"));
     const navigate = useNavigate();
     const {authData} = useAuthContext();
+
+    const { bannerData, setBannerData } = useBannerContext();
+
 
     useEffect(() => { // Get user info and movie list
         console.log(state.privacy);
@@ -54,20 +58,20 @@ const EditListPage = ({ setBanner }) => {
         const editListNameResponse = await editListName();
 
         if (!editListNameResponse || editListNameResponse.status === 404) {
-            setBanner({message: "Error editing list name. Unable to find user or list.", variant: "danger"});
-            //navigate(".", {state: {paramMessage: "Error editing list name. Unable to find user or list.", variant: "danger"}});
+            setBannerData({message: "Error editing list name. Unable to find user or list.", variant: "error"});
+            //navigate(".", {state: {paramMessage: "Error editing list name. Unable to find user or list.", variant: "error"}});
         } else if (editListNameResponse.status === 400) {
-            setBanner({message: "A list already exists with this name. Please choose a different name", variant: "danger"});
-            //navigate(".", {state: {paramMessage: "A list already exists with this name. Please choose a different name", variant: "danger"}});
+            setBannerData({message: "A list already exists with this name. Please choose a different name", variant: "error"});
+            //navigate(".", {state: {paramMessage: "A list already exists with this name. Please choose a different name", variant: "error"}});
         } else {
             const editPrivacyResponse = await editListPrivacy();
 
             if(editPrivacyResponse && editPrivacyResponse.ok) {
-                setBanner({message: null, variant: null});
+                setBannerData({message: null, variant: null});
                 navigate(-1);
             } else {
-                setBanner({message: "Error editing list privacy. Unable to find user or list", variant: "danger"});
-                //navigate(".", {state: {paramMessage: "Error editing list privacy. Unable to find user or list", variant: "danger"}});
+                setBannerData({message: "Error editing list privacy. Unable to find user or list", variant: "error"});
+                //navigate(".", {state: {paramMessage: "Error editing list privacy. Unable to find user or list", variant: "error"}});
             }
         }
     }

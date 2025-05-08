@@ -3,8 +3,11 @@ import {Link} from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import "../styles/personBox.css";
 import { ReactComponent as MoviePosterPlaceHolderImage } from '../assets/movieposterplaceholder.svg';
+import {useBannerContext} from "../contexts/BannerContext";
 
-const PersonBox = ({name, profilePath, character, setBanner}) =>{
+const PersonBox = ({name, profilePath, character}) =>{
+    const { bannerData, setBannerData } = useBannerContext();
+
     return (
         <div>
             <Card className="PersonBox">
@@ -17,7 +20,7 @@ const PersonBox = ({name, profilePath, character, setBanner}) =>{
                         <Link id={"actorLink-" + name} style={{textDecoration: "none", color: "black"}}
                               to={"/search/actor/" + name + "/null/null"}
                               aria-label={"actorLink"}
-                              onClick={() => setBanner({message: null, variant: null})}>{name}</Link>
+                              onClick={() => setBannerData({message: null, variant: null})}>{name}</Link>
                     </Card.Title>
                     <Card.Text style={{color: "#828281"}}>
                         {character}

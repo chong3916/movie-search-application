@@ -1,60 +1,125 @@
 package movie.time.project.demo.api.controllers;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import movie.time.project.demo.api.requests.UserRequest;
 import movie.time.project.demo.api.responses.UserResponse;
 import movie.time.project.demo.db.model.User;
 import movie.time.project.demo.db.repository.UserRepository;
+import net.bytebuddy.utility.RandomString;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:8080")
-@RestController
+@Controller
 @RequestMapping("/api/auth")
 public class AuthController {
     private static final int MAX_FAILED_ATTEMPTS = 3;
     private static final long LOCK_TIME_DURATION = 30 * 1000; // 30 seconds
     private final Clock clock;
+
+    private final String siteURL = "https://localhost:8080";
+
     UserRepository userRepository;
     BCryptPasswordEncoder passwordEncoder;
-    public AuthController(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+    private JavaMailSender mailSender;
+    private MailHelper mailHelper;
+
+    @Value("${spring.mail.from}")
+    private String fromAddress;
+    @Value("${spring.mail.username}")
+    private String senderName;
+
+
+    public AuthController(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, JavaMailSender mailSender, MailHelper mailHelper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.mailSender = mailSender;
+        this.mailHelper = mailHelper;
         clock = Clock.systemDefaultZone();
     }
 
-
     @PostMapping("/signup")
-    public ResponseEntity<UserResponse> createNewUser(@RequestBody UserRequest request) {
+    public ResponseEntity<UserResponse> createNewUser(@RequestBody UserRequest request) throws MessagingException, UnsupportedEncodingException {
         String encoded = passwordEncoder.encode(request.getPassword());
 
-        User user = new User(request.getUsername(), encoded);
-        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
+        User user = new User(request.getUsername(), encoded, request.getEmail());
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
+        String randomCode = RandomString.make(64);
+        user.setVerificationCode(randomCode);
+        user.setEnabled(false);
+
         userRepository.save(user);
 
-        UserResponse response = new UserResponse();
-        response.setUuid(user.getUuid());
-        response.setUsername(user.getUsername());
+        sendVerificationEmail(user, siteURL);
 
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/verify")
+    public String verifyUser(@RequestParam("code") String verificationCode) {
+        Optional<User> user = userRepository.findByVerificationCode(verificationCode);
+        if(!user.isPresent()) {
+            return "redirect:/?verified=failure";
+        }
+
+        User userEntity = user.get();
+        if(userEntity.isEnabled()) {
+            return "redirect:/?verified=failure";
+        }
+
+        userEntity.setEnabled(true);
+        userRepository.save(userEntity);
+
+        UserResponse response = new UserResponse();
+        response.setUuid(userEntity.getUuid());
+        response.setUsername(userEntity.getUsername());
+
+        return "redirect:/?verified=success";
+    }
+
+    private void sendVerificationEmail(User user, String siteURL) throws MessagingException, UnsupportedEncodingException {
+        String toAddress = user.getEmail();
+        String subject = "Please verify your registration";
+        String content = "Dear [[name]],<br>"
+                + "Please click the link below to verify your registration:<br>"
+                + "<h3><a href=\"[[URL]]\" target=\"_self\">VERIFY</a></h3>"
+                + "Thank you,<br>"
+                + senderName;
+
+
+        content = content.replace("[[name]]", user.getUsername());
+        String verifyURL = siteURL + "/api/auth/verify?code=" + user.getVerificationCode();
+
+        content = content.replace("[[URL]]", verifyURL);
+
+        mailHelper.sendVerificationEmail(fromAddress, senderName, toAddress, subject, content, true);
     }
 
     @PostMapping("/login")
     public ResponseEntity<UserResponse> login(@RequestBody UserRequest request) {
-
-        Optional<User> foundUser = userRepository.findByUsername(request.getUsername());
+        Optional<User> foundUser = userRepository.findByEmail(request.getEmail());
         if (!foundUser.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
+        else if(!foundUser.get().isEnabled()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         else if(foundUser.get().isAccountNonLocked()) {
             if (passwordEncoder.matches(request.getPassword(), foundUser.get().getPassword())) {
                 UserResponse response = new UserResponse();
