@@ -10,12 +10,16 @@ import MoveMovieButton from "../components/MoveMovieButton";
 import SeeMovieListsButton from "../components/SeeMovieListsButton";
 import FreeTicketButton from "../components/FreeTicketButton";
 import { Movie } from "../api/movie";
+import {useBannerContext} from "../contexts/BannerContext";
+import {useAuthContext} from "../contexts/AuthContext";
 
 const MovieBox = ({title, posterPath, movieId, releaseDate, watchlist, haveAddMovieButton, haveRemoveMovieButton, haveSeeMovieListsButton,
-                      haveCopyMovieButton, haveMoveMovieButton, haveFreeTicketButton, listId, handleUpdateWatchlist, setBanner}) =>{
+                      haveCopyMovieButton, haveMoveMovieButton, haveFreeTicketButton, listId, handleUpdateWatchlist}) =>{
     const [open, setOpen] = useState(false);
     const [fetchResponse, handleFetchResponse] = useState();
     const [backgroundImage, setBackgroundImage] = useState("");
+    const { bannerData, setBannerData } = useBannerContext();
+    const { authData } = useAuthContext();
 
     useEffect(() => {
         // NB: we have to declare an async function within useEffect
@@ -30,7 +34,7 @@ const MovieBox = ({title, posterPath, movieId, releaseDate, watchlist, haveAddMo
                 }
                 handleFetchResponse(movie);
             } catch (e) {
-                setBanner({message: "No details for this movie", variant: "danger"});
+                setBannerData({message: "No details for this movie", variant: "error"});
                 console.error(e);
             }
         }
@@ -57,19 +61,19 @@ const MovieBox = ({title, posterPath, movieId, releaseDate, watchlist, haveAddMo
                         <Stack className="MovieButtonContainer" style={{textAlign: "center"}}>
                             {haveAddMovieButton ?
                                 <div>
-                                    <AddMovieButton movieId={movieId} watchlist={watchlist} handleUpdateWatchlist={handleUpdateWatchlist} title={title} setBanner={setBanner}/>
+                                    <AddMovieButton movieId={movieId} watchlist={watchlist} handleUpdateWatchlist={handleUpdateWatchlist} title={title}/>
                                 </div>  : null}
                             {haveRemoveMovieButton ?
                                 <div>
-                                    <RemoveMovieButton movieId={movieId} listId={listId} handleUpdateWatchlist={handleUpdateWatchlist} title={title} setBanner={setBanner}/>
+                                    <RemoveMovieButton movieId={movieId} listId={listId} handleUpdateWatchlist={handleUpdateWatchlist} title={title}/>
                                 </div> : null}
                             {haveCopyMovieButton ?
                                 <div>
-                                    <CopyMovieButton listId={listId} movieId={movieId} watchlist={watchlist} title={title} handleUpdateWatchlist={handleUpdateWatchlist} setBanner={setBanner}/>
+                                    <CopyMovieButton listId={listId} movieId={movieId} watchlist={watchlist} title={title} handleUpdateWatchlist={handleUpdateWatchlist}/>
                                 </div> : null}
                             {haveMoveMovieButton ?
                                 <div>
-                                    <MoveMovieButton listId={listId} movieId={movieId} watchlist={watchlist} handleUpdateWatchlist={handleUpdateWatchlist} title={title} setBanner={setBanner}/>
+                                    <MoveMovieButton listId={listId} movieId={movieId} watchlist={watchlist} handleUpdateWatchlist={handleUpdateWatchlist} title={title}/>
                                 </div> : null}
                             {haveSeeMovieListsButton ?
                                 <div>
@@ -84,7 +88,7 @@ const MovieBox = ({title, posterPath, movieId, releaseDate, watchlist, haveAddMo
                 </Card.Body>
                 <Collapse in={open}>
                     <Card.Body id="movieDetailCollapse">
-                        {open ? <MovieDetail fetchResponse={fetchResponse} backgroundImage={backgroundImage} setBanner={setBanner}/> : null}
+                        {open ? <MovieDetail fetchResponse={fetchResponse} backgroundImage={backgroundImage}/> : null}
                     </Card.Body>
                 </Collapse>
             </Card>
