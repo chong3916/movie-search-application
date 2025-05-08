@@ -8,8 +8,9 @@ import DropdownItem from "react-bootstrap/DropdownItem";
 import { List } from "../api/list";
 import {Movie} from "../api/movie";
 import {useAuthContext} from "../contexts/AuthContext";
+import {useBannerContext} from "../contexts/BannerContext";
 
-const WatchlistMoviesPage = ({ setBanner }) => {
+const WatchlistMoviesPage = () => {
     const navigate = useNavigate();
     const { listId } = useParams();
     const [userLists, setUserLists] = useState([]);
@@ -18,6 +19,8 @@ const WatchlistMoviesPage = ({ setBanner }) => {
     const [watchlist, setWatchlist] = useState(null);
     const [watchlistMovies, setWatchlistMovies] = useState([]);
     const {authData} = useAuthContext();
+
+    const { bannerData, setBannerData } = useBannerContext();
 
     const isUserList = watchlist ? userLists.filter(list => list.listId === watchlist.listId).length > 0 : false;
 
@@ -65,11 +68,11 @@ const WatchlistMoviesPage = ({ setBanner }) => {
     const handleComparisonNewList = async () => {
         try {
             await List.newListWithMovies(authData.uuid, commonListName(), true, compareWatchlist.movieIds);
-            setBanner({message: "Created new watch list with common movies", variant: "success"});
+            setBannerData({message: "Created new watch list with common movies", variant: "success"});
             navigate("/user");
         } catch (e) {
             console.error(e);
-            setBanner({message: "Error while creating new list from comparison", variant: "danger"});
+            setBannerData({message: "Error while creating new list from comparison", variant: "error"});
             navigate("/user");
         }
     }
@@ -80,7 +83,7 @@ const WatchlistMoviesPage = ({ setBanner }) => {
             setCompareWatchlistMovies(await Movie.getManyById(movieIds));
         } catch (e) {
             console.error(e);
-            setBanner({message: "Error getting movies for comparison", variant: "danger"});
+            setBannerData({message: "Error getting movies for comparison", variant: "error"});
             navigate("/");
         }
     }
@@ -89,7 +92,7 @@ const WatchlistMoviesPage = ({ setBanner }) => {
         try {
             setUserLists(await List.getByUserId(authData.uuid));
         } catch (e) {
-            setBanner({message: "Error getting user watchlists", variant: "danger"});
+            setBannerData({message: "Error getting user watchlists", variant: "error"});
             navigate("/user");
         }
     }
@@ -101,7 +104,7 @@ const WatchlistMoviesPage = ({ setBanner }) => {
                     setWatchlistMovies(await Movie.getManyById(responseList.movieIds));
                 } catch (e) {
                     console.error(e);
-                    setBanner({message: "Error getting movies in list", variant: "danger"});
+                    setBannerData({message: "Error getting movies in list", variant: "error"});
                     navigate("/user");
                 }
             }
@@ -118,7 +121,7 @@ const WatchlistMoviesPage = ({ setBanner }) => {
                         <span>{watchlist?.listName ?? ''}</span>
                     </Col>
                     <Col xs="4" sm="2" style={boldFontStyle}>
-                        <div id="view-montage-link" style={viewMontageLinkStyle} onClick={() => {navigate(`/montage/${listId}`); setBanner({message: null, variant: null})}}>View Montage</div>
+                        <div id="view-montage-link" style={viewMontageLinkStyle} onClick={() => {navigate(`/montage/${listId}`); setBannerData({message: null, variant: null})}}>View Montage</div>
                     </Col>
 
                     {isUserList ? <Col xs="2" sm="1" style={{display:"flex", justifyContent: "left"}}>
@@ -150,8 +153,7 @@ const WatchlistMoviesPage = ({ setBanner }) => {
                             haveFreeTicketButton={true}
                             watchlist={userLists}
                             movieId={movie.movieId} listId={listId}
-                            handleUpdateWatchlist={handleGetListMovies}
-                            setBanner={setBanner}/>
+                            handleUpdateWatchlist={handleGetListMovies} />
                     ))}
                 </div>
 

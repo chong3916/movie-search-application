@@ -11,6 +11,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import {useSearchContext} from "../contexts/SearchContext";
 import FilterItems from "./FilterItems";
+import {useBannerContext} from "../contexts/BannerContext";
 
 const Search = styled('form')(({ theme }) => ({
     position: 'relative',
@@ -51,8 +52,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 const searchCategories = ['keyword', 'actor', 'title'];
 
-const Searchbar = ({ setBanner }) => {
+const Searchbar = () => {
     const { searchData, setSearchData } = useSearchContext();
+    const { bannerData, setBannerData } = useBannerContext();
+
     const [drawerState, setDrawerState] = React.useState(false);
     const isMobile = !useMediaQuery('(min-width:600px)');
     const navigate = useNavigate();
@@ -78,7 +81,7 @@ const Searchbar = ({ setBanner }) => {
         if(/\S/.test(searchData.searchTerm)){
             const searchStartYear = searchData.startYear.length === 0 ? null : searchData.startYear;
             const searchEndYear = searchData.endYear.length === 0 ? null : searchData.endYear;
-            setBanner({message: null, variant: null});
+            setBannerData({message: null, variant: null});
             const searchPath = searchData.searchTerm.replace(' ', '+'); // replace the space in search term with "+"
             setSearchData({
                 searchTerm: "",
@@ -90,8 +93,8 @@ const Searchbar = ({ setBanner }) => {
         }
         else{
             setSearchData({...searchData, searchTerm: "", searchCategory: searchCategories[0]});
-            setBanner({message: "Search term can not be empty", variant: "danger"});
-            //navigate(".", {state: {paramMessage: "Search term can not be empty", variant: "danger"}});
+            setBannerData({message: "Search term can not be empty", variant: "error"});
+            //navigate(".", {state: {paramMessage: "Search term can not be empty", variant: "error"}});
         }
     }
 

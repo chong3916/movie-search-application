@@ -20,7 +20,7 @@ public class UserControllerTest {
 
     @Test
     public void getUserByUUIDTestSuccess() {
-        User user = new User("test-username", "test-password");
+        User user = new User("test-username", "test-password", "test-email");
         UUID uuid = user.getUuid();
 
         UserRepository mockRepo = mock(UserRepository.class);
@@ -57,9 +57,9 @@ public class UserControllerTest {
     @Test
     public void getAllUsersTestSuccess() {
         UserRepository mockRepo = mock(UserRepository.class);
-        User userOne = new User("test-username1", "test-password1");
-        User userTwo = new User("test-username2", "test-password2");
-        User userThree = new User("test-username3", "test-password3");
+        User userOne = new User("test-username1", "test-password1", "test-email1");
+        User userTwo = new User("test-username2", "test-password2", "test-email2");
+        User userThree = new User("test-username3", "test-password3", "test-email3");
         List<User> userList = Arrays.asList(userOne, userTwo, userThree);
         when(mockRepo.findAll()).thenReturn(userList);
         userController = new UserController(mockRepo);

@@ -16,7 +16,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     //boolean existsByUsername(String username);
     //boolean existsByEmail(String email);
     Optional<User> findByUuid(UUID uuid);
-    Optional<User> findByUsername(String email);
+    Optional<User> findByUsername(String username);
+    Optional<User> findByEmail(String email);
+    Optional<User> findByVerificationCode(String verificationCode);
+
     @Modifying
     @Transactional
     @Query("UPDATE User u SET u.failedAttempt = ?1 WHERE u.uuid = ?2")

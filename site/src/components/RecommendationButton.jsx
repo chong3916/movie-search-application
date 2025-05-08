@@ -3,11 +3,13 @@ import "../styles/addMovieButton.css";
 import {DropdownButton, Form, FormCheck, OverlayTrigger, Tooltip} from "react-bootstrap";
 import DropdownItem from "react-bootstrap/DropdownItem";
 import {useNavigate} from "react-router-dom";
+import {useBannerContext} from "../contexts/BannerContext";
 
-const RecommendationButton = ({ setRecommendations, lists, setBanner }) => {
+const RecommendationButton = ({ setRecommendations, lists }) => {
     const [recommendationNum, setRecommendationNum] = useState("");
     const [checkedState, setCheckedState] = useState(new Array(lists.length).fill(false));
     const navigate = useNavigate();
+    const { bannerData, setBannerData } = useBannerContext();
 
     useEffect(() => {
         setCheckedState(new Array(lists.length).fill(false));
@@ -40,7 +42,7 @@ const RecommendationButton = ({ setRecommendations, lists, setBanner }) => {
         }
         else{
             setRecommendations(null);
-            setBanner({message: "Unable to generate recommendations for chosen list. Please choose list with more movies.", variant: "danger"});
+            setBannerData({message: "Unable to generate recommendations for chosen list. Please choose list with more movies.", variant: "error"});
             navigate("/user")
         }
     }
