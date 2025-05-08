@@ -18,7 +18,7 @@ public class SpringBootAPI {
         SpringApplication.run(SpringBootAPI.class, args);
     }
 
-    @RequestMapping(value = {"{_:^(?!index\\.html|api).*$}", "/search/{searchVal}", "/search/{searchCategory}/{searchVal}", "/search/{searchCategory}/{searchVal}/{searchStartYear}", "/search/{searchCategory}/{searchVal}/{searchStartYear}/{searchEndYear}", "/movie/{movieId}", "/keyword/{searchVal}/{searchStartYear}/{searchEndYear}", "/keyword/{searchVal}", "/lists/privacy", "/lists/rename", "/movie/list"})
+    @RequestMapping(value = {"{_:^(?!index\\.html|api).*$}", "/search/{searchVal}", "/search/{searchCategory}/{searchVal}", "/search/{searchCategory}/{searchVal}/{searchStartYear}", "/search/{searchCategory}/{searchVal}/{searchStartYear}/{searchEndYear}", "/movie/{movieId}", "/keyword/{searchVal}/{searchStartYear}/{searchEndYear}", "/keyword/{searchVal}", "/lists/privacy", "/lists/rename", "/movie/list", "/api/auth/verify"})
     public String redirect() {
         // Forward to home page so that route is preserved.(i.e forward:/index.html)
         return "forward:/";

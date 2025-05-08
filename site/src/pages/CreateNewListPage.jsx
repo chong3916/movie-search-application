@@ -5,13 +5,15 @@ import {Form} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import {List as list} from "../api/list";
 import {useAuthContext} from "../contexts/AuthContext";
-const CreateNewListPage = ({ setBanner }) => {
+import {useBannerContext} from "../contexts/BannerContext";
+const CreateNewListPage = () => {
     const [newListName, setNewListName] = useState("");
     const [newListPrivacy, setNewListPrivacy] = useState("private");
     const {state} = useLocation();
     const [movieIds, setMovieIds] = useState([]);
     const navigate = useNavigate();
     const {authData} = useAuthContext();
+    const { bannerData, setBannerData } = useBannerContext();
 
     useEffect(() => {
         if(state && state.movieIds){
@@ -26,14 +28,14 @@ const CreateNewListPage = ({ setBanner }) => {
                                                         await list.newListWithoutMovies(authData.uuid, newListName, newListPrivacy === "private"));
 
             if (fetchResponse.ok) {
-                setBanner({message: "Created new watch list", variant: "success"});
+                setBannerData({message: "Created new watch list", variant: "success"});
                 navigate(-1);
             } else {
-                setBanner({message: "A list already exists with that name. Please provide a different name", variant: "danger"});
+                setBannerData({message: "A list already exists with that name. Please provide a different name", variant: "error"});
             }
         } catch(e){
             console.log(e);
-            setBanner({message: "Error creating list", variant: "danger"});
+            setBannerData({message: "Error creating list", variant: "error"});
         }
     }
 

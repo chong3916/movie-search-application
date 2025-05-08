@@ -6,37 +6,51 @@ import Button from "react-bootstrap/Button";
 import "../styles/loginPage.css";
 import {useAuthContext} from "../contexts/AuthContext";
 import {Card, Container, CardContent, Stack, TextField, Typography} from "@mui/material";
+import {useBannerContext} from "../contexts/BannerContext";
 
-function SignUpPage({ setBanner }) {
+function SignUpPage() {
+    const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const {authData, setAuthData} = useAuthContext();
     const navigate = useNavigate();
 
+    const { bannerData, setBannerData } = useBannerContext();
+
     const handleLoginClick = () => {
-        setBanner({message: null, variant: null});
+        setBannerData({message: null, variant: null});
         navigate("/login");
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (password !== confirmPassword) {
-            setBanner({message: "Confirm password does not match password entered. Please try again", variant: "danger"});
-            //navigate(".", {state: {paramMessage: "Confirm password does not match password entered. Please try again", variant: "danger"}})
+            setBannerData({message: "Confirm password does not match password entered. Please try again", variant: "error"});
+            //navigate(".", {state: {paramMessage: "Confirm password does not match password entered. Please try again", variant: "error"}})
             setPassword(""); // Reset password field
             setConfirmPassword(""); // Reset confirm password field
             return;
         }
+        else if(!email.includes("@")) {
+            setBannerData({message: "Please enter a valid email.", variant: "error"});
+            setEmail("");
+            return
+        }
         
         try{ 
-            const user = await Auth.signup(username, password);
-            setAuthData({...authData, uuid: user.uuid, username: user.username, isLoggedIn: true});
-            setBanner({message: null, variant: null});
-            navigate("/");
+            const response = await Auth.signup(username, password, email);
+            if(response.ok) {
+                setBannerData({message: "Sign up successful. Please check email for verification.", variant: "success"});
+                navigate("/");
+            }
+            //setAuthData({...authData, uuid: user.uuid, username: user.username, isLoggedIn: true});
+            else {
+                setBannerData({message: "User already exists. Please login or sign up with different user info.", variant: "error"});
+            }
         } catch (e) {
-            setBanner({message: "User already exists. Please login or sign up with different user info.", variant: "danger"});
-            //navigate(".", {state: {paramMessage: "User already exists. Please login or sign up with different user info.", variant: "danger"}})
+            setBannerData({message: "Unable to sign up. Please try again.", variant: "error"});
+            //navigate(".", {state: {paramMessage: "User already exists. Please login or sign up with different user info.", variant: "error"}})
             console.error(e);
         }
     };
@@ -51,6 +65,15 @@ function SignUpPage({ setBanner }) {
                     <Stack spacing={3}>
                         <form onSubmit={handleSubmit}>
                             <Stack spacing={5}>
+                                <TextField
+                                    id="email"
+                                    label="Email"
+                                    value={email}
+                                    variant="standard"
+                                    onChange={(event) => {
+                                        setEmail(event.target.value);
+                                    }}
+                                />
                                 <TextField
                                     id="username"
                                     label="Username"
@@ -72,7 +95,7 @@ function SignUpPage({ setBanner }) {
                                 />
                                 <TextField
                                     id="confirmPassword"
-                                    label="confirmPassword"
+                                    label="Confirm Password"
                                     value={confirmPassword}
                                     variant="standard"
                                     type="password"
@@ -80,7 +103,7 @@ function SignUpPage({ setBanner }) {
                                         setConfirmPassword(event.target.value);
                                     }}
                                 />
-                                <Button type="submit" aria-label="submit" id="submit">LOGIN</Button>
+                                <Button type="submit" aria-label="submit" id="submit">SIGN UP</Button>
                             </Stack>
                         </form>
                         <p style={{fontSize: "1rem", textAlign: "center", width: "auto"}}>
