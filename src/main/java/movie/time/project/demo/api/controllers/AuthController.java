@@ -31,7 +31,8 @@ public class AuthController {
     private static final long LOCK_TIME_DURATION = 30 * 1000; // 30 seconds
     private final Clock clock;
 
-    private final String siteURL = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();;
+    @Value("${app.site-url}")
+    private String siteURL;
 
     UserRepository userRepository;
     BCryptPasswordEncoder passwordEncoder;
