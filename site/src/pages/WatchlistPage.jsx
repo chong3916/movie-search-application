@@ -8,8 +8,9 @@ import RecommendationButton from "../components/RecommendationButton";
 import MovieBox from "../components/MovieBox";
 import {List} from "../api/list";
 import {useAuthContext} from "../contexts/AuthContext";
+import {useBannerContext} from "../contexts/BannerContext";
 
-const WatchlistPage = ({ setBanner }) => {
+const WatchlistPage = () => {
     const [userLists, setUserLists] = useState([]);
     const [publicLists, setPublicLists] = useState([]);
     const [recommendations, setRecommendations] = useState(null);
@@ -17,11 +18,13 @@ const WatchlistPage = ({ setBanner }) => {
     const {authData} = useAuthContext();
     const navigate = useNavigate();
 
+    const { bannerData, setBannerData } = useBannerContext();
+
     const getUserLists = async () => {
         try{
             setUserLists(await List.getByUserId(authData.uuid));
         } catch(e){
-            setBanner({message: "Error getting user watchlists", variant: "danger"});
+            setBannerData({message: "Error getting user watchlists", variant: "error"});
             navigate("/login");
         }
     }
@@ -30,8 +33,8 @@ const WatchlistPage = ({ setBanner }) => {
         try{
             setPublicLists(await List.getPublic());
         } catch(e){
-            setBanner({message: "Error getting public watchlists", variant: "danger"});
-            //navigate(".", {state: {paramMessage: "Error getting public watchlists", variant: "danger"}});
+            setBannerData({message: "Error getting public watchlists", variant: "error"});
+            //navigate(".", {state: {paramMessage: "Error getting public watchlists", variant: "error"}});
         }
     }
 
@@ -41,7 +44,7 @@ const WatchlistPage = ({ setBanner }) => {
     },[watchlistUpdate]);
 
     const handleNewWatchlist = () => {
-        setBanner({message: null, variant: null});
+        setBannerData({message: null, variant: null});
         navigate("/watchlist/new");
     }
 
@@ -58,7 +61,7 @@ const WatchlistPage = ({ setBanner }) => {
         for(let i = 0; i < recommendations.length; i++){
             movieIds.push(recommendations[i].movieId);
         }
-        setBanner({message: null, variant: null});
+        setBannerData({message: null, variant: null});
         navigate("/watchlist/new", {state: {movieIds: movieIds}})
     }
 
@@ -72,14 +75,14 @@ const WatchlistPage = ({ setBanner }) => {
                         <Button className="NewListButton" variant="secondary" size="sm" id="newListButton" aria-label="newListButton" onClick={handleNewWatchlist}>New List</Button>
                     </Col>
                     <Col xs sm="auto">
-                        <RecommendationButton lists={userLists} setRecommendations={handleGetRecommendations} setBanner={setBanner} style={{margin: "1%"}}/>
+                        <RecommendationButton lists={userLists} setRecommendations={handleGetRecommendations} style={{margin: "1%"}}/>
                     </Col>
                 </Row>
                 <div className="UserWatchlists" style={{display: "flex", flexDirection: "row", overflow: "auto", flex: "1"}}>
                     {userLists.length === 0 ? <div style={placeholderDivStyle}/> : null}
                     {userLists.map((list) =>
                         <WatchlistCard key={list.listId} listId={list.listId} listName={list.listName} privacy={list.privacy ? "private" : "public"}
-                                       handleWatchlistUpdate={handleWatchlistUpdate} haveRemoveListButton={true} setBanner={setBanner}/>)}
+                                       handleWatchlistUpdate={handleWatchlistUpdate} haveRemoveListButton={true} />)}
                 </div>
             </Container>
             <Container>
@@ -89,7 +92,7 @@ const WatchlistPage = ({ setBanner }) => {
                 <div className="PublicWatchlists" style={{display: "flex", flexDirection: "row", overflow: "auto", flex: "1"}}>
                     {publicLists.length === 0 ? <div style={placeholderDivStyle}/> : null}
                     {publicLists.map((list) =>
-                        <WatchlistCard key={list.listId} listId={list.listId} listName={list.listName} privacy={"public"} setBanner={setBanner}/>)}
+                        <WatchlistCard key={list.listId} listId={list.listId} listName={list.listName} privacy={"public"} />)}
                 </div>
             </Container>
             {recommendations ? <Container>
@@ -103,7 +106,7 @@ const WatchlistPage = ({ setBanner }) => {
                                                                                           haveAddMovieButton={false}
                                                                                           haveRemoveMovieButton={false}
                                                                                           movieId={movie.movieId}
-                                                                                          setBanner={setBanner}/>)}
+                                                                                          />)}
                     </div>
                 </div>
             </Container> : null}

@@ -5,10 +5,12 @@ import DropdownToggle from "react-bootstrap/DropdownToggle";
 import {Dropdown} from "react-bootstrap";
 import DropdownItem from "react-bootstrap/DropdownItem";
 import { ReactComponent as AddMovieButtonIcon } from '../assets/addmoviebutton.svg';
+import {useBannerContext} from "../contexts/BannerContext";
 
-const AddMovieButton = ({movieId, watchlist, handleUpdateWatchlist, title, setBanner}) => {
+const AddMovieButton = ({movieId, watchlist, handleUpdateWatchlist, title}) => {
     const [filteredLists, setFilteredLists] = useState([]);
     const navigate = useNavigate();
+    const { bannerData, setBannerData } = useBannerContext();
 
     useEffect(() => {
         handleWatchlistUpdate();
@@ -38,7 +40,7 @@ const AddMovieButton = ({movieId, watchlist, handleUpdateWatchlist, title, setBa
     }
 
     const handleCreateNewList = () => {
-        setBanner({message: null, variant: null});
+        setBannerData({message: null, variant: null});
         navigate("/watchlist/new", { state: { movieIds: [movieId] } });
     }
 

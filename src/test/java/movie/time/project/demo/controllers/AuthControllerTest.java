@@ -1,5 +1,8 @@
 package movie.time.project.demo.controllers;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import movie.time.project.demo.api.controllers.MailHelper;
 import movie.time.project.demo.api.requests.UserRequest;
 import movie.time.project.demo.api.responses.UserResponse;
 import movie.time.project.demo.db.model.User;
@@ -10,8 +13,10 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.io.UnsupportedEncodingException;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -25,33 +30,49 @@ public class AuthControllerTest {
     AuthController authController;
 
     @Test
-    public void createNewUserTestSuccess() {
+    public void createNewUserTestSuccess() throws Exception {
         UserRequest request = new UserRequest();
         request.setUsername("test-username");
         request.setPassword("test-password");
+        request.setEmail("test-email");
 
         UserRepository mockRepo = mock(UserRepository.class);
         BCryptPasswordEncoder mockEncoder = mock(BCryptPasswordEncoder.class);
         when(mockEncoder.encode(anyString())).thenReturn("");
-        authController = new AuthController(mockRepo, mockEncoder);
+
+        JavaMailSender mockMailSender = mock(JavaMailSender.class);
+        MimeMessage mockMimeMessage = mock(MimeMessage.class);
+
+        when(mockMailSender.createMimeMessage()).thenReturn(mockMimeMessage);
+
+        MailHelper mockMailHelper = mock(MailHelper.class);
+
+        authController = new AuthController(mockRepo, mockEncoder, mockMailSender, mockMailHelper);
 
         ResponseEntity<UserResponse> response = authController.createNewUser(request);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("test-username", response.getBody().getUsername());
+
+        verify(mockMailHelper).sendVerificationEmail(
+                anyString(), anyString(), eq("test-email"), anyString(), contains("VERIFY"), eq(true));
     }
 
     @Test
-    public void createNewUserTestFail() {
+    public void createNewUserTestFail() throws MessagingException, UnsupportedEncodingException {
         UserRequest request = new UserRequest();
         request.setUsername("test-username");
         request.setPassword("test-password");
-        User dummyUser = new User("test-username", "test-password");
+        request.setEmail("test-email");
+        User dummyUser = new User("test-username", "test-password", "test-email");
 
         UserRepository mockRepo = mock(UserRepository.class);
         when(mockRepo.findByUsername(anyString())).thenReturn(Optional.of(dummyUser));
         BCryptPasswordEncoder mockEncoder = mock(BCryptPasswordEncoder.class);
         when(mockEncoder.encode(anyString())).thenReturn("");
-        authController = new AuthController(mockRepo, mockEncoder);
+        JavaMailSender mockMailSender = mock(JavaMailSender.class);
+        MailHelper mockMailHelper = mock(MailHelper.class);
+
+        authController = new AuthController(mockRepo, mockEncoder, mockMailSender, mockMailHelper);
 
         ResponseEntity<UserResponse> response = authController.createNewUser(request);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -63,14 +84,17 @@ public class AuthControllerTest {
         request.setUsername("test-username");
         request.setPassword("test-password");
 
-        User dummyUser = new User("test-username", "test-password");
+        User dummyUser = new User("test-username", "test-password", "test-email");
 
         UserRepository mockRepo = mock(UserRepository.class);
         when(mockRepo.findByUsername(anyString())).thenReturn(Optional.of(dummyUser));
         BCryptPasswordEncoder mockEncoder = mock(BCryptPasswordEncoder.class);
         when(mockEncoder.encode(anyString())).thenReturn("test-password");
         when(mockEncoder.matches("test-password", "test-password")).thenReturn(true);
-        authController = new AuthController(mockRepo, mockEncoder);
+        JavaMailSender mockMailSender = mock(JavaMailSender.class);
+        MailHelper mockMailHelper = mock(MailHelper.class);
+
+        authController = new AuthController(mockRepo, mockEncoder, mockMailSender, mockMailHelper);
 
         ResponseEntity<UserResponse> response = authController.login(request);
 
@@ -84,7 +108,7 @@ public class AuthControllerTest {
         request.setUsername("test-username");
         request.setPassword("test-password");
 
-        User dummyUser = new User("test-username", "test-wrongPassword");
+        User dummyUser = new User("test-username", "test-wrongPassword", "test-email");
 
 
         UserRepository mockRepo = mock(UserRepository.class);
@@ -93,7 +117,10 @@ public class AuthControllerTest {
         when(mockEncoder.encode(anyString())).thenReturn("test-password");
         when(mockEncoder.matches("test-password", "test-wrongPassword")).thenReturn(false);
 
-        authController = new AuthController(mockRepo, mockEncoder);
+        JavaMailSender mockMailSender = mock(JavaMailSender.class);
+        MailHelper mockMailHelper = mock(MailHelper.class);
+
+        authController = new AuthController(mockRepo, mockEncoder, mockMailSender, mockMailHelper);
 
         ResponseEntity<UserResponse> response = authController.login(request);
 
@@ -110,7 +137,10 @@ public class AuthControllerTest {
         when(mockRepo.findByUsername(anyString())).thenReturn(Optional.ofNullable(null));
         BCryptPasswordEncoder mockEncoder = mock(BCryptPasswordEncoder.class);
 
-        authController = new AuthController(mockRepo, mockEncoder);
+        JavaMailSender mockMailSender = mock(JavaMailSender.class);
+        MailHelper mockMailHelper = mock(MailHelper.class);
+
+        authController = new AuthController(mockRepo, mockEncoder, mockMailSender, mockMailHelper);
 
         ResponseEntity<UserResponse> response = authController.login(request);
 
@@ -123,7 +153,7 @@ public class AuthControllerTest {
         request.setUsername("test-username");
         request.setPassword("test-password");
 
-        User dummyUser = new User("test-username", "test-wrongPassword");
+        User dummyUser = new User("test-username", "test-wrongPassword", "test-email");
 
         UserRepository mockRepo = mock(UserRepository.class);
         when(mockRepo.findByUsername(anyString())).thenReturn(Optional.of(dummyUser));
@@ -136,7 +166,10 @@ public class AuthControllerTest {
         try(MockedStatic<Clock> mockedClock = Mockito.mockStatic(Clock.class)){
             mockedClock.when(Clock::systemDefaultZone).thenReturn(clock);
 
-            authController = new AuthController(mockRepo, mockEncoder);
+            JavaMailSender mockMailSender = mock(JavaMailSender.class);
+            MailHelper mockMailHelper = mock(MailHelper.class);
+
+            authController = new AuthController(mockRepo, mockEncoder, mockMailSender, mockMailHelper);
 
             dummyUser.setFailedAttempt(2);
 
@@ -152,7 +185,7 @@ public class AuthControllerTest {
         request.setUsername("test-username");
         request.setPassword("test-password");
 
-        User dummyUser = new User("test-username", "test-wrongPassword");
+        User dummyUser = new User("test-username", "test-wrongPassword", "test-email");
 
         UserRepository mockRepo = mock(UserRepository.class);
         when(mockRepo.findByUsername(anyString())).thenReturn(Optional.of(dummyUser));
@@ -164,8 +197,10 @@ public class AuthControllerTest {
         Clock clock = Clock.fixed(instant, ZoneOffset.UTC);
         try(MockedStatic<Clock> mockedClock = Mockito.mockStatic(Clock.class)){
             mockedClock.when(Clock::systemDefaultZone).thenReturn(clock);
-            authController = new AuthController(mockRepo, mockEncoder);
+            JavaMailSender mockMailSender = mock(JavaMailSender.class);
+            MailHelper mockMailHelper = mock(MailHelper.class);
 
+            authController = new AuthController(mockRepo, mockEncoder, mockMailSender, mockMailHelper);
             dummyUser.setFailedAttempt(3);
             dummyUser.setAccountNonLocked(false);
 
@@ -182,7 +217,7 @@ public class AuthControllerTest {
         request.setUsername("test-username");
         request.setPassword("test-password");
 
-        User dummyUser = new User("test-username", "test-password");
+        User dummyUser = new User("test-username", "test-password", "test-email");
 
         UserRepository mockRepo = mock(UserRepository.class);
         when(mockRepo.findByUsername(anyString())).thenReturn(Optional.of(dummyUser));
@@ -194,7 +229,10 @@ public class AuthControllerTest {
         Clock clock = Clock.fixed(instant, ZoneOffset.UTC);
         try(MockedStatic<Clock> mockedClock = Mockito.mockStatic(Clock.class)){
             mockedClock.when(Clock::systemDefaultZone).thenReturn(clock);
-            authController = new AuthController(mockRepo, mockEncoder);
+            JavaMailSender mockMailSender = mock(JavaMailSender.class);
+            MailHelper mockMailHelper = mock(MailHelper.class);
+
+            authController = new AuthController(mockRepo, mockEncoder, mockMailSender, mockMailHelper);
 
             dummyUser.setAccountNonLocked(false);
             dummyUser.setLockTime(Instant.ofEpochSecond(0L));
@@ -210,7 +248,7 @@ public class AuthControllerTest {
         request.setUsername("test-username");
         request.setPassword("test-wrongPassword");
 
-        User dummyUser = new User("test-username", "test-password");
+        User dummyUser = new User("test-username", "test-password", "test-email");
 
         UserRepository mockRepo = mock(UserRepository.class);
         when(mockRepo.findByUsername(anyString())).thenReturn(Optional.of(dummyUser));
@@ -222,7 +260,10 @@ public class AuthControllerTest {
         Clock clock = Clock.fixed(instant, ZoneOffset.UTC);
         try(MockedStatic<Clock> mockedClock = Mockito.mockStatic(Clock.class)){
             mockedClock.when(Clock::systemDefaultZone).thenReturn(clock);
-            authController = new AuthController(mockRepo, mockEncoder);
+            JavaMailSender mockMailSender = mock(JavaMailSender.class);
+            MailHelper mockMailHelper = mock(MailHelper.class);
+
+            authController = new AuthController(mockRepo, mockEncoder, mockMailSender, mockMailHelper);
 
             dummyUser.setAccountNonLocked(false);
             dummyUser.setLockTime(Instant.ofEpochSecond(0L));
@@ -238,7 +279,7 @@ public class AuthControllerTest {
         request.setUsername("test-username");
         request.setPassword("test-password");
 
-        User dummyUser = new User("test-username", "test-wrongPassword");
+        User dummyUser = new User("test-username", "test-wrongPassword", "test-email");
         dummyUser.setFailedAttempt(1);
 
         UserRepository mockRepo = mock(UserRepository.class);
@@ -251,7 +292,10 @@ public class AuthControllerTest {
         Clock clock = Clock.fixed(instant, ZoneOffset.UTC);
         try(MockedStatic<Clock> mockedClock = Mockito.mockStatic(Clock.class)){
             mockedClock.when(Clock::systemDefaultZone).thenReturn(clock);
-            authController = new AuthController(mockRepo, mockEncoder);
+            JavaMailSender mockMailSender = mock(JavaMailSender.class);
+            MailHelper mockMailHelper = mock(MailHelper.class);
+
+            authController = new AuthController(mockRepo, mockEncoder, mockMailSender, mockMailHelper);
 
             dummyUser.setFailedAttempt(2);
             dummyUser.setFirstLoginAttemptTime(Instant.ofEpochSecond(0L));
@@ -264,7 +308,7 @@ public class AuthControllerTest {
 
     @Test
     public void authLockUserTest(){
-        User dummyUser = new User("test-username", "test-wrongPassword");
+        User dummyUser = new User("test-username", "test-wrongPassword", "test-email");
 
         UserRepository mockRepo = mock(UserRepository.class);
         BCryptPasswordEncoder mockEncoder = mock(BCryptPasswordEncoder.class);
@@ -273,7 +317,10 @@ public class AuthControllerTest {
         Clock clock = Clock.fixed(instant, ZoneOffset.UTC);
         try(MockedStatic<Clock> mockedClock = Mockito.mockStatic(Clock.class)){
             mockedClock.when(Clock::systemDefaultZone).thenReturn(clock);
-            authController = new AuthController(mockRepo, mockEncoder);
+            JavaMailSender mockMailSender = mock(JavaMailSender.class);
+            MailHelper mockMailHelper = mock(MailHelper.class);
+
+            authController = new AuthController(mockRepo, mockEncoder, mockMailSender, mockMailHelper);
             authController.resetFailedAttempts(dummyUser);
 
             dummyUser.setFirstLoginAttemptTime(Instant.ofEpochSecond(100000000L));
@@ -288,7 +335,7 @@ public class AuthControllerTest {
 
     @Test
     public void authIncreaseFailedAttemptsTest(){
-        User dummyUser = new User("test-username", "test-wrongPassword");
+        User dummyUser = new User("test-username", "test-wrongPassword", "test-email");
 
         UserRepository mockRepo = mock(UserRepository.class);
         BCryptPasswordEncoder mockEncoder = mock(BCryptPasswordEncoder.class);
@@ -297,7 +344,10 @@ public class AuthControllerTest {
         Clock clock = Clock.fixed(instant, ZoneOffset.UTC);
         try(MockedStatic<Clock> mockedClock = Mockito.mockStatic(Clock.class)){
             mockedClock.when(Clock::systemDefaultZone).thenReturn(clock);
-            authController = new AuthController(mockRepo, mockEncoder);
+            JavaMailSender mockMailSender = mock(JavaMailSender.class);
+            MailHelper mockMailHelper = mock(MailHelper.class);
+
+            authController = new AuthController(mockRepo, mockEncoder, mockMailSender, mockMailHelper);
 
             boolean increaseFailedAttemptsResponse = authController.increaseFailedAttempts(dummyUser); // Test when increase failed called first time
             assertEquals(true, increaseFailedAttemptsResponse);
@@ -316,7 +366,7 @@ public class AuthControllerTest {
 
     @Test
     public void authUnlockWhenTimeExpiredTest(){
-        User dummyUser = new User("test-username", "test-wrongPassword");
+        User dummyUser = new User("test-username", "test-wrongPassword", "test-email");
 
         UserRepository mockRepo = mock(UserRepository.class);
         BCryptPasswordEncoder mockEncoder = mock(BCryptPasswordEncoder.class);
@@ -325,7 +375,10 @@ public class AuthControllerTest {
         Clock clock = Clock.fixed(instant, ZoneOffset.UTC);
         try(MockedStatic<Clock> mockedClock = Mockito.mockStatic(Clock.class)){
             mockedClock.when(Clock::systemDefaultZone).thenReturn(clock);
-            authController = new AuthController(mockRepo, mockEncoder);
+            JavaMailSender mockMailSender = mock(JavaMailSender.class);
+            MailHelper mockMailHelper = mock(MailHelper.class);
+
+            authController = new AuthController(mockRepo, mockEncoder, mockMailSender, mockMailHelper);
 
             dummyUser.setLockTime(Instant.ofEpochSecond(0L));
             boolean unlockResponse = authController.unlockWhenTimeExpired(dummyUser); // test when ready to unlock user account yet
