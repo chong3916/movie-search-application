@@ -1,39 +1,26 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {
-    Navbar,
-    Nav,
-    Container,
-} from "react-bootstrap";
 import "../styles/navBar.css";
 import Searchbar from './Searchbar'
 import ErrorMessage from "./ErrorMessage";
 import {useAuthContext} from "../contexts/AuthContext";
-import {AppBar, Box, CssBaseline, Drawer, IconButton, Toolbar, Typography, useMediaQuery} from "@mui/material";
+import {AppBar, Box, CssBaseline, Drawer, IconButton, Stack, Toolbar, Typography, useMediaQuery} from "@mui/material";
 import Button from '@mui/material/Button';
 import SearchIcon from "@mui/icons-material/Search";
-import * as PropTypes from "prop-types";
 import MenuIcon from "@mui/icons-material/Menu";
+import {useBannerContext} from "../contexts/BannerContext";
 
 
-const NavigationBar = ({ banner, setBanner }) => {
+const NavigationBar = () => {
     const navigate = useNavigate();
     const { authData, setAuthData } = useAuthContext();
+    const { bannerData, setBannerData } = useBannerContext();
+
     const matches = useMediaQuery('(min-width:800px)');
     const { showSearchBar, setShowSearchBar } = useState(false);
 
-    useEffect(() => { // Get user info and movie list
-        console.log(authData);
-        document.documentElement.style.setProperty('--navbar-padding', "7rem");
-        document.documentElement.style.setProperty('--navbar-mobile-padding', "6rem");
-        if (banner.message) {
-            document.documentElement.style.setProperty('--navbar-padding', "12rem");
-            document.documentElement.style.setProperty('--navbar-mobile-padding', "12rem");
-        }
-    }, [banner.message, banner.variant]);
-
     const handleNavigationClick = (path) => {
-        setBanner({message: null, variant: null});
+        setBannerData({message: null, variant: null});
         navigate(path);
     }
 
@@ -45,52 +32,15 @@ const NavigationBar = ({ banner, setBanner }) => {
     const handleDrawerToggle = () => {
     }
 
-    /*
     return (
-        <Container style={{top: "0", position: "fixed", zIndex: "1", backgroundColor: "#f5f5f5"}} fluid>
-            {banner.message ?
-                <ErrorMessage banner={banner} setBanner={setBanner}/> : null}
-            <Navbar bg="light" expand="lg">
-                {!showSearchBar ?
-                    <Navbar.Brand id="navbarHome" className="movie-time-logo"
-                                  onClick={() => handleNavigationClick("/")}>Movie
-                        Time</Navbar.Brand>
-                    <div className="custom-nav-wrapper">
-                        <Nav className="me-auto">
-                            {authData.isLoggedIn && (
-                                <Nav.Link id="viewProfileLink" onClick={() => handleNavigationClick("/user")}>
-                                    View Profile
-                                </Nav.Link>
-                            )}
-                            {!authData.isLoggedIn && (
-                                <Nav.Link id="navbarLogin" onClick={() => handleNavigationClick("/login")}>
-                                    Login
-                                </Nav.Link>
-                            )}
-                            {authData.isLoggedIn && (
-                                <Nav.Link id="navbarLogout" onClick={() => handleLogoutClick()}>
-                                    Logout
-                                </Nav.Link>
-                            )}
-                        </Nav>
-                    </div>
-                {!matches ?
-                    <IconButton sx={{p: '10px'}} aria-label="menu" onClick={() => setShowSearchBar(true)}>
-                        <SearchIcon/>
-                    </IconButton> :
-                    <Searchbar setBanner={setBanner}/>
-                }
-                : <Searchbar setBanner={setBanner}/>}
-            </Navbar>
-        </Container>
-    );
-
-     */
-
-    return (
+        <div>
+            {bannerData.message && bannerData.message.length > 0 ?
+                <Box sx={{ width: '100%' }}>
+                    <ErrorMessage />
+                </Box> : null}
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
-            <AppBar component="nav" sx={{ pointerEvents: 'none' }}>
+            <AppBar component="nav" position="static">
                 <Toolbar>
                     <IconButton
                         color="inherit"
@@ -122,7 +72,7 @@ const NavigationBar = ({ banner, setBanner }) => {
                             <IconButton sx={{p: '10px', pointerEvents: 'auto'}} aria-label="menu" onClick={() => setShowSearchBar(true)}>
                                 <SearchIcon/>
                             </IconButton> :
-                            <Searchbar setBanner={setBanner}/>}
+                            <Searchbar/>}
                         <Button
                             onClick={() => handleNavigationClick("/user")}
                             sx={{my: 2, color: 'white', pointerEvents: 'auto'}} disableRipple>
@@ -144,82 +94,8 @@ const NavigationBar = ({ banner, setBanner }) => {
                 </Toolbar>
             </AppBar>
         </Box>
+        </div>
     );
-    /*
-    return(
-    <nav>
-                <Drawer
-                    container={container}
-                    variant="temporary"
-                    open={mobileOpen}
-                    onClose={handleDrawerToggle}
-                    ModalProps={{
-                        keepMounted: true, // Better open performance on mobile.
-                    }}
-                    sx={{
-                        display: { xs: 'block', sm: 'none' },
-                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-                    }}
-                >
-                    {drawer}
-                </Drawer>
-            </nav>
-
-
-
-        <Button
-                        onClick={() => handleNavigationClick("/")}>
-                        <Typography variant="h6"
-                                    component="div"
-                                    sx={{
-                                        flexGrow: 1,
-                                        display: { xs: 'none', sm: 'block' },
-                                        fontFamily: 'monospace',
-                                        fontWeight: 700,
-                                        letterSpacing: '.3rem'
-                                    }}>
-                            Movie Time
-                        </Typography>
-                    </Button>
-
-        <Box sx={{display: 'flex'}}>
-            <AppBar component="nav">
-                <Toolbar disableGutters>
-                    <Button
-                        onClick={() => handleNavigationClick("/")}
-                        sx={{my: 2, color: 'white', display: 'block'}}>
-                        <Typography variant="h6"
-                                    sx={{
-                                        fontFamily: 'monospace',
-                                        fontWeight: 700,
-                                        letterSpacing: '.3rem'
-                                    }}>
-                            Movie Time
-                        </Typography>
-                    </Button>
-                    <Box sx={{ display: { xs: 'none', sm: 'block' } }} id="searchBarContents">
-                        {!matches ?
-                            <IconButton sx={{p: '10px'}} aria-label="menu" onClick={() => setShowSearchBar(true)}>
-                                <SearchIcon/>
-                            </IconButton> :
-                            <Searchbar setBanner={setBanner}/>}
-                        {!authData.isLoggedIn ?
-                            <Button
-                                onClick={() => handleNavigationClick("/login")}
-                                sx={{my: 2, color: 'white', display: 'block'}}>
-                                Login
-                            </Button> :
-                            <Button
-                                onClick={() => handleLogoutClick()}
-                                sx={{my: 2, color: 'white', display: 'block'}}>
-                                Logout
-                            </Button>
-                        }
-                    </Box>
-                </Toolbar>
-            </AppBar>
-        </Box>
-    );*/
 };
 
 export default NavigationBar;

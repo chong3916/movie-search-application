@@ -2,15 +2,17 @@ import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import { Auth } from "../api/auth";
 import {useAuthContext} from "../contexts/AuthContext";
+import {useBannerContext} from "../contexts/BannerContext";
 
-const PrivateRoute = ({ children, setBanner }) => {
+const PrivateRoute = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const navigate = useNavigate();
     const {authData, setAuthData} = useAuthContext();
+    const { bannerData, setBannerData } = useBannerContext();
 
     useEffect(() => {
         if(!authData.uuid) {
-            setBanner({message: "Please login to use application.", variant: "danger"});
+            setBannerData({message: "Please login to use application.", variant: "error"});
             navigate("/login");
         }
         else {
@@ -24,7 +26,7 @@ const PrivateRoute = ({ children, setBanner }) => {
             const validUser = await Auth.validateUserId(userId);
             if (!validUser) {
                 setAuthData({...authData, uuid: null, username: null, isLoggedIn: false});
-                setBanner({message: "Please login to use application.", variant: "danger"});
+                setBannerData({message: "Please login to use application.", variant: "error"});
                 navigate("/login");
                 return;
             }

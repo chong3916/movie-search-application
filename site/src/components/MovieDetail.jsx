@@ -4,8 +4,10 @@ import PersonBox from "./PersonBox";
 import "../styles/movieDetail.css";
 import { ReactComponent as MoviePosterPlaceHolderImage } from '../assets/movieposterplaceholder.svg';
 import {Col, Container, Row} from "react-bootstrap";
+import {useBannerContext} from "../contexts/BannerContext";
 
-const MovieDetail = ({ fetchResponse, backgroundImage, setBanner} ) =>{
+const MovieDetail = ({ fetchResponse, backgroundImage} ) =>{
+    const { bannerData, setBannerData } = useBannerContext();
 
     // If fetchResponse is valid and not null, render HTML component
     if(fetchResponse){
@@ -38,7 +40,7 @@ const MovieDetail = ({ fetchResponse, backgroundImage, setBanner} ) =>{
                                                       aria-label={"genre" + genre.name + "Link"}
                                                       style={{textDecoration: "none", color: "white"}}
                                                       to={"/search/genre/" + genre.id + "/null/null"}
-                                                      onClick={() => {setBanner({message: null, variant: null})}}>
+                                                      onClick={() => {setBannerData({message: null, variant: null})}}>
                                                     {genre.name + " "}
                                                 </Link>)}
                                         </li> : null}</Col>
@@ -66,7 +68,7 @@ const MovieDetail = ({ fetchResponse, backgroundImage, setBanner} ) =>{
                 <h2 style={{marginLeft: "1%"}}>Cast</h2>
                 <Container id="cast" className="CastContainer" style={{display: "flex", flexDirection: "row", overflow: "auto"}}>
                     {fetchResponse.cast ? (fetchResponse.cast.map((person) =>
-                        <PersonBox key={person.order} {...person} setBanner={setBanner}/>)) : null}
+                        <PersonBox key={person.order} {...person} />)) : null}
                 </Container>
             </Container>
         );

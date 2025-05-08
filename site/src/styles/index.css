@@ -1,6 +1,4 @@
 :root {
-  --navbar-padding: 7rem;
-  --navbar-mobile-padding: 6rem;
 }
 
 button {
@@ -20,12 +18,7 @@ button:active {
 }
 
 body {
-  padding-bottom: 5rem;
-  padding-top: var(--navbar-padding);
 }
 
 @media screen and (max-width: 600px) {
-  body {
-    padding-top: var(--navbar-mobile-padding);
-  }
 }

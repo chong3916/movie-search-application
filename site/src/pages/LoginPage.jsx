@@ -5,15 +5,18 @@ import Button from "react-bootstrap/Button";
 import "../styles/loginPage.css";
 import {useAuthContext} from "../contexts/AuthContext";
 import {Card, CardContent, Container, TextField, Typography, Stack} from "@mui/material";
+import {useBannerContext} from "../contexts/BannerContext";
 
-const LoginPage = ({ setBanner }) => {
+const LoginPage = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const { authData, setAuthData } = useAuthContext();
     const navigate = useNavigate();
 
+    const { bannerData, setBannerData } = useBannerContext();
+
     const handleSignUpClick = () => {
-        setBanner({message: null, variant: null});
+        setBannerData({message: null, variant: null});
         navigate("/signup");
     };
 
@@ -30,29 +33,32 @@ const LoginPage = ({ setBanner }) => {
             else {
                 const userInfo = await user.json();
                 setAuthData({...authData, uuid: userInfo.uuid, username: userInfo.username, isLoggedIn: true});
-                setBanner({message: null, variant: null});
+                setBannerData({message: null, variant: null});
                 navigate("/");
                 return;
             }
 
             if(user.status === 400){
-                setBanner({message: "Invalid password. Try again.", variant: "danger"});
+                setBannerData({message: "Invalid password. Try again.", variant: "error"});
             }
             else if(user.status === 404){
-                setBanner({message: "Unable to find user with given information. Try again or create a new user.", variant: "danger"});
-                //navigate(".", {state: {paramMessage: "Unable to find user with given information. Try again or create a new user.", variant: "danger"}});
+                setBannerData({message: "Unable to find user with given information. Try again or create a new user.", variant: "error"});
+                //navigate(".", {state: {paramMessage: "Unable to find user with given information. Try again or create a new user.", variant: "error"}});
             }
             else if(user.status === 429){
-                setBanner({message: "Locked account due to too many failed login attempts. Please try again later.", variant: "danger"});
-                //navigate(".", {state: {paramMessage: "Locked account due to too many failed login attempts. Please try again later.", variant: "danger"}});
+                setBannerData({message: "Locked account due to too many failed login attempts. Please try again later.", variant: "error"});
+                //navigate(".", {state: {paramMessage: "Locked account due to too many failed login attempts. Please try again later.", variant: "error"}});
             }
             else if(user.status === 503){
-                setBanner({message: "Account is still locked. Please try again later.", variant: "danger"});
-                //navigate(".", {state: {paramMessage: "Account is still locked. Please try again later.", variant: "danger"}});
+                setBannerData({message: "Account is still locked. Please try again later.", variant: "error"});
+                //navigate(".", {state: {paramMessage: "Account is still locked. Please try again later.", variant: "error"}});
+            }
+            else if(user.status === 401) {
+                setBannerData({message: "Please verify your account to log in.", variant: "error"});
             }
         } catch (e) {
-            setBanner({message: "Unable to find user with given information. Try again or create a new user.", variant: "danger"});
-            //navigate(".", {state: {paramMessage: "Unable to find user with given information. Try again or create a new user.", variant: "danger"}})
+            setBannerData({message: "Unable to find user with given information. Please try again or create a new user.", variant: "error"});
+            //navigate(".", {state: {paramMessage: "Unable to find user with given information. Try again or create a new user.", variant: "error"}})
             console.error(e);
         }
     }

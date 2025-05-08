@@ -13,10 +13,11 @@ const login = async (username, password) => {
   return response;
 };
 
-const signup = async (username, password) => {
+const signup = async (username, password, email) => {
   const payload = {
     username,
-    password
+    password,
+    email
   };
 
   const response = await fetch("/api/auth/signup", {
@@ -27,7 +28,7 @@ const signup = async (username, password) => {
     body: JSON.stringify(payload)
   });
 
-  return await response.json();
+  return await response;
 };
 
 const validateUserId = async (userId) => {
