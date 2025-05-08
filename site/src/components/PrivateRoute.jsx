@@ -21,7 +21,6 @@ const PrivateRoute = ({ children }) => {
     }, []);
 
     const handleAuthentication = async (userId) => {
-        console.log(userId);
         try {
             const validUser = await Auth.validateUserId(userId);
             if (!validUser) {

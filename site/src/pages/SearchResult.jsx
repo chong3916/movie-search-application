@@ -32,7 +32,7 @@ function SearchResult(){
         if(initialRender.current) {
             getSearch();
         }
-        if(authData.uuid == null || authData.uuid.length > 0) { // If user is not logged in, just return
+        if(authData.uuid == null || authData.uuid.length === 0) { // If user is not logged in, just return
             initialRender.current = true;
             return
         }

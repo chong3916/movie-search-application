@@ -66,8 +66,6 @@ const Searchbar = () => {
     };
 
     const toggleDrawer = (open) => (event) => {
-        console.log(isMobile);
-        console.log(open);
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
             return;
         }
@@ -77,7 +75,6 @@ const Searchbar = () => {
 
     const handleSubmit = (event) =>{
         event.preventDefault();
-        console.log(searchData);
         if(/\S/.test(searchData.searchTerm)){
             const searchStartYear = searchData.startYear.length === 0 ? null : searchData.startYear;
             const searchEndYear = searchData.endYear.length === 0 ? null : searchData.endYear;
