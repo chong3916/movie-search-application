@@ -1,9 +1,12 @@
 import React from "react";
-import {Alert} from "react-bootstrap";
-const ErrorMessage = ({banner, setBanner}) =>{
+import Alert from '@mui/material/Alert';
+import {useBannerContext} from "../contexts/BannerContext";
+
+const ErrorMessage = () =>{
+    const { bannerData, setBannerData } = useBannerContext();
     return(
-        <Alert aria-label="errorAlert" id="errorAlert" variant={banner.variant} onClose={() => setBanner({message: null, variant: null})} dismissible>
-            <p style={{textAlign: "center"}}>{banner.message}</p>
+        <Alert aria-label="errorAlert" id="errorAlert" severity={bannerData.variant} onClose={() => setBannerData({message: null, variant: null})} dismissible>
+            <p style={{textAlign: "center"}}>{bannerData.message}</p>
         </Alert>
     );
 }

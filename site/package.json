@@ -1,5 +1,5 @@
 {
-  "name": "310-project",
+  "name": "movie-time-project",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -10,6 +10,7 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@mui/icons-material": "^5.14.9",
     "@mui/material": "^5.14.9",
+    "@react-oauth/google": "^0.12.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
@@ -26,12 +27,12 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "dev": "react-scripts start",
+    "start": "serve -s build",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "pretty": "prettier --check \"src/**/*.{js,ts,jsx,tsx}\"",
-    "fix:pretty": "prettier --write \"src/**/*.{js,ts,jsx,tsx}\""
+    "heroku-postbuild": "npm run build"
   },
   "eslintConfig": {
     "extends": [

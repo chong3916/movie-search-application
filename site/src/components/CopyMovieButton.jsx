@@ -5,10 +5,13 @@ import DropdownToggle from "react-bootstrap/DropdownToggle";
 import {Dropdown} from "react-bootstrap";
 import DropdownItem from "react-bootstrap/DropdownItem";
 import { ReactComponent as CopyMovieButtonIcon } from '../assets/copymoviebutton.svg'
+import {useBannerContext} from "../contexts/BannerContext";
 
-const CopyMovieButton = ({movieId, watchlist, title, handleUpdateWatchlist, setBanner}) => {
+const CopyMovieButton = ({movieId, watchlist, title, handleUpdateWatchlist}) => {
     const navigate = useNavigate();
     const [filteredLists, setFilteredLists] = useState(watchlist);
+
+    const { bannerData, setBannerData } = useBannerContext();
 
     useEffect(() => {
         handleUpdateAbleWatchlists();
@@ -37,7 +40,7 @@ const CopyMovieButton = ({movieId, watchlist, title, handleUpdateWatchlist, setB
     }
 
     const handleCreateNewList = () => {
-        setBanner({message: null, variant: null});
+        setBannerData({message: null, variant: null});
         navigate("/watchlist/new", { state: { movieIds: [movieId] } });
     }
 

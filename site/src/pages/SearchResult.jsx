@@ -3,10 +3,13 @@ import {useNavigate, useParams} from "react-router-dom";
 import MovieBox from "../components/MovieBox";
 import {Search} from "../api/search";
 import {List} from "../api/list";
+import {useBannerContext} from "../contexts/BannerContext";
+import {useAuthContext} from "../contexts/AuthContext";
 
-function SearchResult({ setBanner }){
+function SearchResult(){
     const navigate = useNavigate();
-    const userId = sessionStorage.getItem("user");
+    const {authData} = useAuthContext();
+    const userId = authData.uuid;
     let {searchVal, searchCategory, searchStartYear, searchEndYear} = useParams();
     const [numLoad, setNumLoad] = useState(10);
     const [watchlist, setWatchlist] = useState([]);
@@ -16,6 +19,8 @@ function SearchResult({ setBanner }){
     const [resetVariables, setResetVariables] = useState(false);
     const initialRender = useRef(false);
 
+    const { bannerData, setBannerData } = useBannerContext();
+
     useEffect(() => {
         setNumLoad(10);
         setResultsArray([]);
@@ -24,10 +29,13 @@ function SearchResult({ setBanner }){
     }, [searchVal, searchCategory, searchStartYear, searchEndYear]);
 
     useEffect(() => {
-        if(initialRender.current){
+        if(initialRender.current) {
             getSearch();
         }
-
+        if(authData.uuid == null || authData.uuid.length === 0) { // If user is not logged in, just return
+            initialRender.current = true;
+            return
+        }
         return () => {
             getUserLists();
             initialRender.current = true;
@@ -56,7 +64,7 @@ function SearchResult({ setBanner }){
             const response = await List.getByUserId(userId);
             setWatchlist(response);
         } catch (e) {
-            setBanner({message: "Error getting user watchlists", variant: "danger"});
+            setBannerData({message: "Error getting user watchlists", variant: "error"});
             navigate("/login");
         }
     }
@@ -76,10 +84,10 @@ function SearchResult({ setBanner }){
                 setTotalPages(response.totalPages);
             }
             else{
-                setBanner({message: "No results for search term", variant: "danger"});
+                setBannerData({message: "No results for search term", variant: "error"});
             }
         } catch(e) {
-            setBanner({message: "No results for search term", variant: "danger"});
+            setBannerData({message: "No results for search term", variant: "error"});
         }
     }
 
@@ -97,8 +105,7 @@ function SearchResult({ setBanner }){
                     <MovieBox key={movieReq.movieId} {...movieReq} haveAddMovieButton={userId}
                               haveFreeTicketButton={userId}
                               haveSeeMovieListsButton={watchlist.length > 0} watchlist={watchlist}
-                              handleUpdateWatchlist={getUserLists}
-                              setBanner={setBanner}/>)}
+                              handleUpdateWatchlist={getUserLists} />)}
                 {(resultsArray.length > numLoad) ? <button id="loadMore" onClick={handleLoadMore} style={
                     {
                         backgroundColor: "#4287f5",
