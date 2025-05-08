@@ -30,7 +30,7 @@ function App() {
                         <NavigationBar />
                         <Routes>
                             <Route path="/" element={<SearchHome />} />
-                            <Route path="/search/:searchCategory?/:searchVal/:searchStartYear?/:searchEndYear?" component="{SearchResult}" element={<PrivateRoute><SearchResult /></PrivateRoute>} />
+                            <Route path="/search/:searchCategory?/:searchVal/:searchStartYear?/:searchEndYear?" component="{SearchResult}" element={<SearchResult />} />
                             <Route path="/watchlist/movies/public/:listId" component="{WatchlistMoviesPage}" element={<PrivateRoute ><WatchlistMoviesPage /></PrivateRoute>} />
                             <Route path="/watchlist/movies/private/:listId" component="{WatchlistMoviesPage}" element={<PrivateRoute ><WatchlistMoviesPage /></PrivateRoute>} />
                             <Route path="/watchlist/:listId/edit" component="{EditListPage}" element={<PrivateRoute ><EditListPage /></PrivateRoute>} />

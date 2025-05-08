@@ -4,10 +4,12 @@ import MovieBox from "../components/MovieBox";
 import {Search} from "../api/search";
 import {List} from "../api/list";
 import {useBannerContext} from "../contexts/BannerContext";
+import {useAuthContext} from "../contexts/AuthContext";
 
 function SearchResult(){
     const navigate = useNavigate();
-    const userId = sessionStorage.getItem("user");
+    const {authData} = useAuthContext();
+    const userId = authData.uuid;
     let {searchVal, searchCategory, searchStartYear, searchEndYear} = useParams();
     const [numLoad, setNumLoad] = useState(10);
     const [watchlist, setWatchlist] = useState([]);
@@ -27,10 +29,13 @@ function SearchResult(){
     }, [searchVal, searchCategory, searchStartYear, searchEndYear]);
 
     useEffect(() => {
-        if(initialRender.current){
+        if(initialRender.current) {
             getSearch();
         }
-
+        if(authData.uuid == null || authData.uuid.length > 0) { // If user is not logged in, just return
+            initialRender.current = true;
+            return
+        }
         return () => {
             getUserLists();
             initialRender.current = true;
