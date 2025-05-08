@@ -73,11 +73,11 @@ const NavigationBar = () => {
                                 <SearchIcon/>
                             </IconButton> :
                             <Searchbar/>}
-                        <Button
-                            onClick={() => handleNavigationClick("/user")}
-                            sx={{my: 2, color: 'white', pointerEvents: 'auto'}} disableRipple>
-                            Watchlist
-                        </Button>
+                        {authData.isLoggedIn ? <Button
+                                onClick={() => handleNavigationClick("/user")}
+                                sx={{my: 2, color: 'white', pointerEvents: 'auto'}} disableRipple>
+                                Watchlist
+                            </Button> : null}
                         {!authData.isLoggedIn ?
                             <Button
                                 onClick={() => handleNavigationClick("/login")}

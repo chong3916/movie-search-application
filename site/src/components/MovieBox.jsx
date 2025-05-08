@@ -11,6 +11,7 @@ import SeeMovieListsButton from "../components/SeeMovieListsButton";
 import FreeTicketButton from "../components/FreeTicketButton";
 import { Movie } from "../api/movie";
 import {useBannerContext} from "../contexts/BannerContext";
+import {useAuthContext} from "../contexts/AuthContext";
 
 const MovieBox = ({title, posterPath, movieId, releaseDate, watchlist, haveAddMovieButton, haveRemoveMovieButton, haveSeeMovieListsButton,
                       haveCopyMovieButton, haveMoveMovieButton, haveFreeTicketButton, listId, handleUpdateWatchlist}) =>{
@@ -18,6 +19,7 @@ const MovieBox = ({title, posterPath, movieId, releaseDate, watchlist, haveAddMo
     const [fetchResponse, handleFetchResponse] = useState();
     const [backgroundImage, setBackgroundImage] = useState("");
     const { bannerData, setBannerData } = useBannerContext();
+    const { authData } = useAuthContext();
 
     useEffect(() => {
         // NB: we have to declare an async function within useEffect
