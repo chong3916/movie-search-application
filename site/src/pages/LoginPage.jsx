@@ -8,7 +8,7 @@ import {Card, CardContent, Container, TextField, Typography, Stack} from "@mui/m
 import {useBannerContext} from "../contexts/BannerContext";
 
 const LoginPage = () => {
-    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const { authData, setAuthData } = useAuthContext();
     const navigate = useNavigate();
@@ -23,11 +23,11 @@ const LoginPage = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const user = await Auth.login(username, password);
+            const user = await Auth.login(email, password);
             console.log(user.status);
             if(user.status !== 200)
             {
-                setUsername("");
+                setEmail("");
                 setPassword("");
             }
             else {
@@ -38,12 +38,8 @@ const LoginPage = () => {
                 return;
             }
 
-            if(user.status === 400){
-                setBannerData({message: "Invalid password. Try again.", variant: "error"});
-            }
-            else if(user.status === 404){
-                setBannerData({message: "Unable to find user with given information. Try again or create a new user.", variant: "error"});
-                //navigate(".", {state: {paramMessage: "Unable to find user with given information. Try again or create a new user.", variant: "error"}});
+            if(user.status === 400 || user.status === 404){
+                setBannerData({message: "Invalid password or user doesn't exist. Please try again.", variant: "error"});
             }
             else if(user.status === 429){
                 setBannerData({message: "Locked account due to too many failed login attempts. Please try again later.", variant: "error"});
@@ -74,12 +70,13 @@ const LoginPage = () => {
                         <form onSubmit={handleSubmit}>
                             <Stack spacing={5}>
                                 <TextField
-                                    id="username"
-                                    label="Username"
-                                    value={username}
+                                    id="email"
+                                    label="Email"
+                                    value={email}
                                     variant="standard"
+                                    type="email"
                                     onChange={(event) => {
-                                        setUsername(event.target.value);
+                                        setEmail(event.target.value);
                                     }}
                                 />
                                 <TextField

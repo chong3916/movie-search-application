@@ -73,8 +73,6 @@ public class AuthController {
 
     @GetMapping("/verify")
     public String verifyUser(@RequestParam("code") String verificationCode) {
-        System.out.println(verificationCode);
-
         Optional<User> user = userRepository.findByVerificationCode(verificationCode);
         if(!user.isPresent()) {
             return "redirect:/?verified=failure";
@@ -115,8 +113,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<UserResponse> login(@RequestBody UserRequest request) {
-
-        Optional<User> foundUser = userRepository.findByUsername(request.getUsername());
+        Optional<User> foundUser = userRepository.findByEmail(request.getEmail());
         if (!foundUser.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
