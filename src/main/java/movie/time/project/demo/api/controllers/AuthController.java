@@ -16,6 +16,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.UnsupportedEncodingException;
 import java.time.Clock;
@@ -30,7 +31,7 @@ public class AuthController {
     private static final long LOCK_TIME_DURATION = 30 * 1000; // 30 seconds
     private final Clock clock;
 
-    private final String siteURL = "https://localhost:8080";
+    private final String siteURL = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();;
 
     UserRepository userRepository;
     BCryptPasswordEncoder passwordEncoder;
