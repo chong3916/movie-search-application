@@ -28,6 +28,22 @@ public class MovieController {
     // Rest template instantiated in Config.java
     private RestTemplate restTemplate;
 
+    @GetMapping("/trending")
+    public ResponseEntity<List<MovieResponse>> getTrendingMovies() {
+        System.out.println("https://api.themoviedb.org/3/trending/movie/day?api_key=" + apiKey);
+        try {
+            ResponseEntity<MovieSearchResponse> responseEntity = restTemplate.getForEntity(
+                    "https://api.themoviedb.org/3/trending/movie/day?api_key=" + apiKey, MovieSearchResponse.class
+            );
+            MovieSearchResponse movieSearchResponse = responseEntity.getBody();
+            System.out.println(movieSearchResponse.getResults().size());
+            return ResponseEntity.ok().body(movieSearchResponse.getResults());
+        }
+        catch(IllegalArgumentException e){ // Unable to get data from link
+            return ResponseEntity.badRequest().build(); // Return bad response
+        }
+    }
+
     @GetMapping("/{movieID}") // map api url for fetch
     public ResponseEntity<MovieResponse> getMovie(@PathVariable("movieID") String movieID){
         try { // Try to get data from link
