@@ -4,8 +4,11 @@ import PropTypes from "prop-types";
 
 function CircularProgressWithLabel(props) {
     return (
-        <Box sx={{ position: 'relative', display: 'inline-flex' }}>
-            <CircularProgress variant="determinate" {...props} />
+        <Box sx={{ position: 'relative', display: 'inline-flex',
+            backgroundColor: '#0a192f', // Dark navy
+            borderRadius: '50%',
+            padding: '4px' }}>
+            <CircularProgress variant="determinate" color="success" {...props} />
             <Box
                 sx={{
                     top: 0,
@@ -21,9 +24,9 @@ function CircularProgressWithLabel(props) {
                 <Typography
                     variant="caption"
                     component="div"
-                    sx={{ color: 'text.secondary' }}
+                    sx={{ color: 'white' }}
                 >
-                    {`${Math.round(props.value)}%`}
+                    {props.value == 0 ? "NR" : `${Math.round(props.value)}%`}
                 </Typography>
             </Box>
         </Box>
@@ -31,11 +34,6 @@ function CircularProgressWithLabel(props) {
 }
 
 CircularProgressWithLabel.propTypes = {
-    /**
-     * The value of the progress indicator for the determinate variant.
-     * Value between 0 and 100.
-     * @default 0
-     */
     value: PropTypes.number.isRequired,
 };
 
