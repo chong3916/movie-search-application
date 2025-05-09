@@ -33,7 +33,7 @@ const NavigationBar = () => {
     }
 
     return (
-        <div style={{ marginBottom: '1rem' }}>
+        <div>
             {bannerData.message && bannerData.message.length > 0 ?
                 <Box sx={{ width: '100%' }}>
                     <ErrorMessage />

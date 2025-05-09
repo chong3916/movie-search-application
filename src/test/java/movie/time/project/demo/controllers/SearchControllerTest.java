@@ -20,8 +20,8 @@ public class SearchControllerTest {
 
     @Test
     void searchControllerForMoveByTitleWorks() {
-        MovieResponse movieResponseTest1 = new MovieResponse("overview", "title", "12345", "/test", null, null, "2023-01-01", null, null, "/test");
-        MovieResponse movieResponse = new MovieResponse(null, null, null, null, null, null, null, null, null, null);
+        MovieResponse movieResponseTest1 = new MovieResponse("overview", "title", "12345", "/test", null, null, "2023-01-01", null, null, "/test", 1);
+        MovieResponse movieResponse = new MovieResponse(null, null, null, null, null, null, null, null, null, null, 1);
         movieResponse.setOverview("overview");
         movieResponse.setTitle("title");
         movieResponse.setMovieId("23456");
@@ -157,7 +157,7 @@ public class SearchControllerTest {
         assertEquals(1, mockedPersonSearchResponse.getTotalPages());
         assertEquals(1, mockedPersonSearchResponse.getTotalResults());
 
-        MovieResponse movieResponse = new MovieResponse("overview", "title", "12345", "/test", null, null, "2020-01-01", cast, null, null);
+        MovieResponse movieResponse = new MovieResponse("overview", "title", "12345", "/test", null, null, "2020-01-01", cast, null, null, 1);
 
         ArrayList<MovieResponse> movieList = new ArrayList<>();
         movieList.add(movieResponse);
@@ -328,7 +328,7 @@ public class SearchControllerTest {
     @Test
     void searchControllerForMovieKeywordWorks() {
         ArrayList<MovieResponse> mockMovieResponseList = new ArrayList<>();
-        MovieResponse mockMovieResponse = new MovieResponse(null, null, "12345", null, null, null, null, null, null, null);
+        MovieResponse mockMovieResponse = new MovieResponse(null, null, "12345", null, null, null, null, null, null, null, 1);
         mockMovieResponseList.add(mockMovieResponse);
         MovieSearchResponse mockSearchResponse = new MovieSearchResponse(mockMovieResponseList, 5, 5, 5);
 
@@ -344,7 +344,7 @@ public class SearchControllerTest {
     void searchControllerForMovieGenreWorks() {
         ArrayList<MovieResponse> mockMovieResponseList = new ArrayList<>();
         GenreResponse mockGenreResponse = new GenreResponse("12", "action");
-        MovieResponse mockMovieResponse = new MovieResponse(null, null, null, null, new GenreResponse[]{mockGenreResponse}, null, null, null, null, null);
+        MovieResponse mockMovieResponse = new MovieResponse(null, null, null, null, new GenreResponse[]{mockGenreResponse}, null, null, null, null, null, 1);
         mockMovieResponseList.add(mockMovieResponse);
         MovieSearchResponse mockSearchResponse = new MovieSearchResponse(mockMovieResponseList, 5, 5, 5);
 
@@ -388,9 +388,9 @@ public class SearchControllerTest {
     @Test
     void filterMovieByYear() {
         ArrayList<MovieResponse> list = new ArrayList<>();
-        MovieResponse movie1 = new MovieResponse(null, null, null, null, null, null, "2020-01-01", null, null, null);
-        MovieResponse movie2 = new MovieResponse(null, null, null, null, null, null, "2023-01-01", null, null, null);
-        MovieResponse movie3 = new MovieResponse(null, null, null, null, null, null, "2019-01-01", null, null, null);
+        MovieResponse movie1 = new MovieResponse(null, null, null, null, null, null, "2020-01-01", null, null, null, 1);
+        MovieResponse movie2 = new MovieResponse(null, null, null, null, null, null, "2023-01-01", null, null, null, 1);
+        MovieResponse movie3 = new MovieResponse(null, null, null, null, null, null, "2019-01-01", null, null, null, 1);
 
         list.add(movie1);
         list.add(movie2);
@@ -415,8 +415,8 @@ public class SearchControllerTest {
         assertEquals(1, responseList.size());
 
         ArrayList<MovieResponse> list2 = new ArrayList<>();
-        MovieResponse nullMovie = new MovieResponse(null, null, null, null, null, null, null, null, null, null);
-        MovieResponse emptyMovie = new MovieResponse(null, null, null, null, null, null, "", null, null, null);
+        MovieResponse nullMovie = new MovieResponse(null, null, null, null, null, null, null, null, null, null, 1);
+        MovieResponse emptyMovie = new MovieResponse(null, null, null, null, null, null, "", null, null, null, 1);
         list2.add(nullMovie);
         list2.add(emptyMovie);
 

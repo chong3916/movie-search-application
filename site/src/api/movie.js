@@ -19,7 +19,19 @@ const getManyById = async (movieIds) => {
   return response.json();
 }
 
+const getTrending = async () => {
+  const response = await fetch("/api/movie/trending", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json"
+    },
+  });
+  return response.json();
+}
+
+
 export const Movie = {
   getById,
-  getManyById
+  getManyById,
+  getTrending
 };
