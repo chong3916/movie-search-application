@@ -25,7 +25,6 @@ function SearchHome(){
             // setTrending(testTrending);
             // const randVal = Math.floor(Math.random() * testTrending.length)
             // setBackdropImg(testTrending[randVal].backdropPath)
-            // console.log(testTrending[randVal].backdropPath)
             // console.log(testTrending);
         } catch(e){
             console.log(e)
@@ -47,10 +46,10 @@ function SearchHome(){
                 color: 'white',
             }}>
                 <Box sx={{margin: '2rem'}}>
-                    <Typography variant="h3">
+                    <Typography variant="h4">
                         Welcome.
                     </Typography>
-                    <Typography variant="h4">
+                    <Typography variant="h5">
                         Explore using the search bar above to find your favorite movies and actors
                     </Typography>
                 </Box>

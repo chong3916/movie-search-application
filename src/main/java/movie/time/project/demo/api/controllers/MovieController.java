@@ -30,13 +30,11 @@ public class MovieController {
 
     @GetMapping("/trending")
     public ResponseEntity<List<MovieResponse>> getTrendingMovies() {
-        System.out.println("https://api.themoviedb.org/3/trending/movie/day?api_key=" + apiKey);
         try {
             ResponseEntity<MovieSearchResponse> responseEntity = restTemplate.getForEntity(
                     "https://api.themoviedb.org/3/trending/movie/day?api_key=" + apiKey, MovieSearchResponse.class
             );
             MovieSearchResponse movieSearchResponse = responseEntity.getBody();
-            System.out.println(movieSearchResponse.getResults().size());
             return ResponseEntity.ok().body(movieSearchResponse.getResults());
         }
         catch(IllegalArgumentException e){ // Unable to get data from link
