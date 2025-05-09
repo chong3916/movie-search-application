@@ -21,7 +21,7 @@ public class MovieControllerTest {
 
     @Test
     void movieControllerGetMovieDetailTest(){
-        MovieResponse mockedResponse = new MovieResponse("overview", "title", "12345", "/test", null, null, "2023-01-01", null, null, "/test");
+        MovieResponse mockedResponse = new MovieResponse("overview", "title", "12345", "/test", null, null, "2023-01-01", null, null, "/test", 1);
 
         GenreResponse genreResponse = new GenreResponse("12", "thriller");
 
@@ -78,7 +78,7 @@ public class MovieControllerTest {
     void movieControllerGetListMovies(){
         // Test when response is valid and has body
         String [] movieIds = {"12345"};
-        MovieResponse mockMovieResponse = new MovieResponse("", "", "12345", "", null, null, "", null, null, "");
+        MovieResponse mockMovieResponse = new MovieResponse("", "", "12345", "", null, null, "", null, null, "",1);
         List<MovieResponse> mockListResponse = new ArrayList<>();
         mockListResponse.add(mockMovieResponse);
         Mockito.when(restTemplate.getForEntity(anyString(),any(),
@@ -105,8 +105,8 @@ public class MovieControllerTest {
         assertEquals(mockMovieIds, mockRequest.getMovieIds());
         assertEquals(2, mockRequest.getCount());
 
-        MovieResponse mockMovieResponse1 = new MovieResponse(null, null, "34928", null, null, null, null, null, null, null);
-        MovieResponse mockMovieResponse2 = new MovieResponse(null, null, "82734", null, null, null, null, null, null, null);
+        MovieResponse mockMovieResponse1 = new MovieResponse(null, null, "34928", null, null, null, null, null, null, null, 1);
+        MovieResponse mockMovieResponse2 = new MovieResponse(null, null, "82734", null, null, null, null, null, null, null, 1);
 
         ArrayList<MovieResponse> listMovieResponse = new ArrayList<>();
         listMovieResponse.add(mockMovieResponse1);
@@ -123,7 +123,7 @@ public class MovieControllerTest {
         assertEquals(2, response.getBody().size());
 
         // Test when there are not enough movies to be recommended with given movieId array
-        MovieResponse mockMovieResponse3 = new MovieResponse(null, null, "98723", null, null, null, null, null, null, null);
+        MovieResponse mockMovieResponse3 = new MovieResponse(null, null, "98723", null, null, null, null, null, null, null, 1);
         listMovieResponse.add(mockMovieResponse3);
         mockSearchResponse = new MovieSearchResponse(listMovieResponse, 3, 1, 0);
         mockRequest.setCount(4);

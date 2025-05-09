@@ -13,8 +13,9 @@ public class MovieResponse {
     private PersonResponse[] cast;
     private String backdrop_path;
     private PersonResponse director;
+    private double vote_average;
 
-    public MovieResponse(String overview, String title, String id, String poster_path, GenreResponse[] genres, ProductionCompaniesResponse[] production_companies, String release_date, PersonResponse[] cast, PersonResponse director, String backdrop_path){
+    public MovieResponse(String overview, String title, String id, String poster_path, GenreResponse[] genres, ProductionCompaniesResponse[] production_companies, String release_date, PersonResponse[] cast, PersonResponse director, String backdrop_path, double vote_average){
         this.title = title;
         this.overview = overview;
         this.id = id;
@@ -24,6 +25,7 @@ public class MovieResponse {
         this.backdrop_path = backdrop_path;
         this.cast = cast;
         this.director = director;
+        this.vote_average = vote_average * 10;
 
         if(poster_path == null){
             this.poster_path = null;
@@ -50,7 +52,9 @@ public class MovieResponse {
     public String getReleaseDate(){ return release_date; }
     public PersonResponse[] getCast(){ return cast; }
     public String getBackdropPath(){ return backdrop_path; }
+    public double getVoteAverage(){ return vote_average; }
 
+    public void setVoteAverage(double vote_average){ this.vote_average = vote_average; }
     public void setTitle(String title){ this.title = title; }
     public void setOverview(String overview){ this.overview = overview; }
     public void setPosterPath(String poster_path){
