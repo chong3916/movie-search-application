@@ -1,9 +1,19 @@
-To run application after cloning repository, use docker.
+# Movietime
 
-First, build the project using "docker-compose build".
+This is a movie search application that allows users to search for movies based on various terms/categories, view detailed information, and manage their movie watchlist.
 
-Then, use the following docker compose command:
-"docker-compose run --service-ports -e API_KEY={api_key} 310-project", where api_key is a TMDB
-registered The Movie DB api key. 
+## Website
 
-Then, use the command "mvn spring-boot run" to run the application.
+You can check out the website here: [Movietime](https://movie-time-8bb9a2077593.herokuapp.com/)
+
+## Features
+
+- Search for movies by key term, title, actors
+- View movie details such as release date, production company, etc.
+- Save movies to a personal watchlist
+
+## Web Stack
+- Frontend: React, Javascript
+- Backend: Node.js, Java, Spring Boot
+- Database: PostgreSQL
+- Deployed on Heroku
