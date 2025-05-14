@@ -16,3 +16,6 @@ buildNumber.properties
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
 src/main/resources/api.properties
+src/main/resources/keystore.p12
+src/main/resources/private.key.pem
+src/main/resources/public.crt.pem
